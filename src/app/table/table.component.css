@@ -1,0 +1,44 @@
+.student-table {
+    margin: 2rem auto;
+    width: 90%;
+    border-collapse: collapse;
+}
+
+.student-table .actions {
+    text-align: center;
+    white-space: nowrap;
+}
+
+
+.student-table th,
+.student-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.student-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.student-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.student-table tbody tr:hover {
+    background-color: #f2f2f2;
+}
+
+.my-dialog {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-new{
+    width: 90%;
+    text-align: right;
+    margin: auto;
+    margin-top: 10px;
+}

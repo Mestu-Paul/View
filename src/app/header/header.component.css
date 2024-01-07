@@ -1,0 +1,11 @@
+/* Style for the header */
+.main-header {
+    background-color: #d00e78; /* Change color as needed */
+    color: #fff; /* Text color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    font-size: 30px;
+    font-weight: bold;
+  }

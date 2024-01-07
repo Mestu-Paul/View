@@ -1,0 +1,41 @@
+<app-popup *ngIf="displayPopup" [message]="popupMessage" 
+[header]="popupHeader"
+[classes]="popupClasses"
+(closePopup)="closePopup()"
+></app-popup>
+<div *ngIf="showTable; else addForm">
+    <div class="add-new">
+        <button (click)="showAddForm()" class="add-btn">Add New</button>
+    </div>
+    <table class="student-table">
+        <thead>
+            <tr>
+                <th style="text-align: center;">Name</th>
+                <th style="text-align: center;">Department</th>
+                <th style="text-align: center;">Session</th>
+                <th style="text-align: center;">Gender</th>
+                <th style="text-align: center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let student of students">
+                <td>{{ student.name }}</td>
+                <td>{{ student.department }}</td>
+                <td>{{ student.session }}</td>
+                <td>{{ student.gender }}</td>
+                <td class="actions">
+                    <button class="update-btn" (click)="readyFormToUpdate(student)">Update</button>
+                    <button class="delete-btn" (click)="deleteStudent(student.id,student.name)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<ng-template #addForm>
+    <app-add-form
+    [updateData]="updateData"
+    [formFields]="formFields"
+    (update)="updateStudent($event)"
+    (save)="save($event)" (cancel)="cancel()"></app-add-form>
+</ng-template>

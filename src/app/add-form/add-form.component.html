@@ -1,0 +1,28 @@
+<app-popup *ngIf="displayPopup" [message]="popupMessage"
+[header]="popupHeader"
+[classes]="popupClasses"
+ (closePopup)="closePopup()"></app-popup>
+<form (ngSubmit)="onSubmit()" #myForm="ngForm">
+    <!-- Your form fields go here -->
+    <Label>Student's Name:</Label>
+    <input type="text" placeholder="Name" [(ngModel)]="formFields[0]" name="name" required>
+    <Label>Student's Department Name:</Label>
+    <input type="text" placeholder="Department e.g CSE" [(ngModel)]="formFields[1]" name="dept" required>
+    <Label>Student Session:</Label>
+    <input type="text" placeholder="Session e.g 2020" [(ngModel)]="formFields[2]" name="session" required>
+    <Label>Student's Gender:</Label>
+    <select [(ngModel)]="formFields[3]" id="gender" name="gender" required>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+    </select>
+    
+    <div style="display: flex; justify-content: space-between;">
+        <button class="delete-btn" type="button" (click)="onCancel()">Cancel</button>
+        <button class="{{updateData ? 'update-btn':'add-btn'}}" type="submit">{{updateData ? "Update":"Save"}}</button>
+    </div>
+</form>
+
+
+
+
+
