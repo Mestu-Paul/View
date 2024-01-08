@@ -9,7 +9,8 @@ import { StudentServiceService } from '../services/api/student-service.service';
 })
 
 export class TableComponent implements OnInit {
-
+  pageNumber:number = 1;
+  pageSize:number = 10;
   constructor(private studentService: StudentServiceService) {
     
   }
@@ -17,7 +18,7 @@ export class TableComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.fetchStudentData(1,10); // Call function to fetch student data
+    this.fetchStudentData(this.pageNumber,this.pageSize); // Call function to fetch student data
   }
 
   // ---------- table and form hide show  ----------
@@ -26,28 +27,23 @@ export class TableComponent implements OnInit {
     this.showTable = false;
     this.updateData = false;
   }
-  save(formData: any) {
-    // Add logic to save form data and perform necessary actions
-    console.log("clicked saved in table");
-    console.log('Form Data:', formData);
-    // this.addStudent(formData)
-    this.showTable = true; // Display the table again after saving
-  }
 
   cancel() {
     console.log("clicked cancel in table");
     this.showTable = true; 
   }
-
   // -------------------------------------
+
   // -------- pop up message options ---------
   displayPopup: boolean = false;
   popupMessage: string = '';
   popupHeader: string = '';
   popupClasses: string = '';
 
-  showPopup() {
-    this.displayPopup = true;
+
+  showPopup(msg:string,hdr:string,cls:string) {
+    this.popupMessage=msg; this.popupHeader=hdr;
+    this.popupClasses = cls; this.displayPopup = true;
   }
 
   closePopup() {
@@ -55,19 +51,7 @@ export class TableComponent implements OnInit {
   }
   // ------------------------------------------
 
-  // data add using post method 
-  onSubmit(studentData: any): void {
-    console.log(studentData);
-    this.studentService.addStudent(studentData).subscribe(
-      (response) => {
-        console.log('Student added successfully:', response);
-      },
-      (error) => {
-        console.error('Error adding student:', error);
-      }
-    );
-  }
-
+  
   // data fetch using get method 
   fetchStudentData(pageNumber:number,pageSize:number) {
     this.studentService.getStudentsPage(pageNumber,pageSize).subscribe(
@@ -81,7 +65,23 @@ export class TableComponent implements OnInit {
     );
   }
 
+  // data add using post method 
+  onSubmit(studentData: any): void {
+    this.showTable = true;
+    console.log(studentData);
+    this.studentService.addStudent(studentData).subscribe(
+      (response) => {
+        console.log('Student added successfully:', response);
+        this.showPopup(`Added ${studentData['name']}'s information`,'Add Student','popup-header-add');
+      },
+      (error) => {
+        console.error('Error adding student:', error);
+        this.showPopup(`Error : ${error}`,'Error','popup-header-delete');
+      });
+      this.fetchStudentData(this.pageNumber,this.pageSize);
+  }
 
+  
   // data delete using delete method 
   onDelete(studentId: string, studentName:string): void {
     this.studentService.deleteStudent(studentId).subscribe(
@@ -91,7 +91,8 @@ export class TableComponent implements OnInit {
       (error) => {
         console.error('Error deleting student:', error);
       }
-    );
+      );
+      this.fetchStudentData(this.pageNumber,this.pageSize);
   }
 
   formName:string = '';
@@ -116,29 +117,19 @@ export class TableComponent implements OnInit {
     // console.log("get date from row", this.formFields);
   }
   updateStudent(formData: any) {
-    const id = formData['id']; // Extract the ID from formData
-
-    const apiUrl = "https://localhost:7181/api/Students/UpdateStudent/"+id;
-
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
-    };
-
-    // Make a PUT request with formData to update the student
-    // this.http.put(apiUrl, formData)
-    //   .subscribe(
-    //     (response) => {
-    //       console.log('Student updated successfully:', response);
-    //       // Handle success, perform further actions if needed
-    //     },
-    //     (error) => {
-    //       console.error('Error updating student:', error);
-    //       // Handle error, show error message or log the error
-    //     }
-    //   );
-    //   this.showTable = true;
+    console.log(formData['id']);
+    this.studentService.updateStudent(formData['id'], formData).subscribe(
+      (response) => {
+        console.log('Student updated successfully:', response);
+        this.showPopup(`Updated ${formData['name']}'s information`,'Update Student','popup-header-update');
+      },
+      (error) => {
+        console.error('Error updating student:', error);
+        // Handle error
+      }
+    );
+    this.fetchStudentData(this.pageNumber,this.pageSize);
+    this.showTable = true;
   }
 
 }

@@ -10,6 +10,7 @@
     <table class="student-table">
         <thead>
             <tr>
+                <th>#</th>
                 <th style="text-align: center;">Name</th>
                 <th style="text-align: center;">Department</th>
                 <th style="text-align: center;">Session</th>
@@ -19,6 +20,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let student of students">
+                <td>{{ student.id }}</td>
                 <td>{{ student.name }}</td>
                 <td>{{ student.department }}</td>
                 <td>{{ student.session }}</td>
@@ -37,5 +39,5 @@
     [updateData]="updateData"
     [formFields]="formFields"
     (update)="updateStudent($event)"
-    (save)="save($event)" (cancel)="cancel()"></app-add-form>
+    (save)="onSubmit($event)" (cancel)="cancel()"></app-add-form>
 </ng-template>

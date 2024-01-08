@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -7,19 +7,18 @@ import { Observable } from 'rxjs';
 })
 export class StudentServiceService {
 
-  private allUrl = 'https://localhost:7181/api/Students'; // Your API URL
-  private apiUrl = 'https://localhost:7181/api/Students';
+  private apiUrl = 'https://localhost:7181/api/students';
 
   constructor(private http: HttpClient) { }
 
   // Method to fetch student data from the API
   getStudents(): Observable<any[]> {
-    const url = `${this.allUrl}/GetStudent`;
+    const url = `${this.apiUrl}/getstudents`;
     return this.http.get<any[]>(url);
   }
 
   getStudentsPage(pageNumber: number, pageSize: number): Observable<any[]> {
-    const url = `${this.apiUrl}/GetStudentsPage?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+    const url = `${this.apiUrl}/getstudentspage?pagenumber=${pageNumber}&pagesize=${pageSize}`;
     return this.http.get<any[]>(url);
   }
 
@@ -29,6 +28,11 @@ export class StudentServiceService {
 
   // Method to delete a student by ID from the API
   deleteStudent(studentId: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/DeleteStudent/${studentId}`, { responseType: 'text' });
+    return this.http.delete(`${this.apiUrl}/DeleteStudent/${studentId}`, { observe: 'response', responseType: 'text' });
   }
+
+  updateStudent(studentId: string, updatedData: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/UpdateStudent/${studentId}`, updatedData,{ observe: 'response', responseType: 'text' });
+  }
+
 }
