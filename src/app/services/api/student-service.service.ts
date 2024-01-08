@@ -17,6 +17,11 @@ export class StudentServiceService {
     return this.http.get<any[]>(url);
   }
 
+  getNumberOfData():Observable<any[]>{
+    const url = `${this.apiUrl}/getnumberofdata`;
+    return this.http.get<any[]>(url);
+  }
+
   getStudentsPage(pageNumber: number, pageSize: number): Observable<any[]> {
     const url = `${this.apiUrl}/getstudentspage?pagenumber=${pageNumber}&pagesize=${pageSize}`;
     return this.http.get<any[]>(url);

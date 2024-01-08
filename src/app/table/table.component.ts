@@ -11,6 +11,9 @@ import { StudentServiceService } from '../services/api/student-service.service';
 export class TableComponent implements OnInit {
   pageNumber:number = 1;
   pageSize:number = 10;
+  numberOfPages:number = 0;
+  pagesArray = Array(this.numberOfPages).fill(0).map((x, i) => i + 1);
+
   constructor(private studentService: StudentServiceService) {
     
   }
@@ -18,8 +21,31 @@ export class TableComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.updateNumberOfPages();
     this.fetchStudentData(this.pageNumber,this.pageSize); // Call function to fetch student data
   }
+
+  // ------------ pagination update ------------
+  updateNumberOfPages(){
+    console.log("calling nod");
+    var total:any = 0;
+    this.studentService.getNumberOfData().subscribe(
+      (data) =>{
+        total = data;
+        this.numberOfPages = Math.floor((total+this.pageSize-1)/this.pageSize);
+        console.log("tesing ",this.numberOfPages,total);
+      },
+      (error)=>{
+        this.showPopup(`Error while retrieving number of Data. >> ${error}`,"Error","popup-header-delete");
+      }
+    );
+  }
+  updatePageNumber(pageNumber:number){
+    console.log("clicked here");
+    this.pageNumber = pageNumber;
+    this.fetchStudentData(this.pageNumber,this.pageSize);
+  }
+  // --------------------------------------------
 
   // ---------- table and form hide show  ----------
   showTable: boolean = true;
@@ -48,6 +74,7 @@ export class TableComponent implements OnInit {
 
   closePopup() {
     this.displayPopup = false;
+    this.fetchStudentData(this.pageNumber,this.pageSize);
   }
   // ------------------------------------------
 
@@ -78,7 +105,6 @@ export class TableComponent implements OnInit {
         console.error('Error adding student:', error);
         this.showPopup(`Error : ${error}`,'Error','popup-header-delete');
       });
-      this.fetchStudentData(this.pageNumber,this.pageSize);
   }
 
   
@@ -87,12 +113,13 @@ export class TableComponent implements OnInit {
     this.studentService.deleteStudent(studentId).subscribe(
       () => {
         console.log(studentName,'Student deleted successfully');
+        this.showPopup(`Deleted ${studentName}'s information`,'Delete Student','popup-header-delete');
       },
       (error) => {
         console.error('Error deleting student:', error);
+        this.showPopup(`Error while ${studentName}'s information deleting ${error}`,'Error','popup-header-delete');
       }
       );
-      this.fetchStudentData(this.pageNumber,this.pageSize);
   }
 
   formName:string = '';
@@ -124,7 +151,8 @@ export class TableComponent implements OnInit {
         this.showPopup(`Updated ${formData['name']}'s information`,'Update Student','popup-header-update');
       },
       (error) => {
-        console.error('Error updating student:', error);
+        // console.error('Error updating student:', error);
+        this.showPopup(`Error while ${formData['name']}'s information updating ${error}`,'Error','popup-header-delete');
         // Handle error
       }
     );

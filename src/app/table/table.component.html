@@ -32,6 +32,22 @@
             </tr>
         </tbody>
     </table>
+    <div class="pagination">
+        <div style="text-align: right; width: 90%;">
+            <select [(ngModel)]="pageSize" style="text-align: right;" name="" id="">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+            </select>
+        </div>
+        <a *ngFor="let i of [].constructor(numberOfPages); let pN = index"
+           [href]="'#'" 
+           (click)="updatePageNumber(pN+1)"
+           class="btn" 
+           [ngClass]="{'add-btn': pN+1 === pageNumber, 'add-btn-inactive': pN+1 !== pageNumber}">
+          {{ pN+1 }}
+        </a>
+      </div>
 </div>
 
 <ng-template #addForm>
