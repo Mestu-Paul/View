@@ -36,13 +36,6 @@
     align-items: center;
 }
 
-.add-new{
-    width: 90%;
-    text-align: right;
-    margin: auto;
-    margin-top: 10px;
-}
-
 .pagination{
     text-align: center;
 }
@@ -51,11 +44,3 @@
     text-decoration: none;
 }
 
-select {
-    margin-bottom: 10px;
-    padding: 8px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    outline: none;
-}

@@ -9,6 +9,7 @@ import { PopupComponent } from './popup/popup.component';
 import { AddFormComponent } from './add-form/add-form.component';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
+import { SearchComponent } from './search/search.component';
 
 // const routes: Routes = [
 //   { path: './add-new-form', component: AddFormComponent },
@@ -19,13 +20,17 @@ import { RouterModule, Routes } from '@angular/router';
     HeaderComponent,
     TableComponent,
     PopupComponent,
-    AddFormComponent
+    AddFormComponent,
+    SearchComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule 
+    FormsModule ,
+    RouterModule.forRoot([
+      { path: 'page/:pageNumber/:pageSize', component: TableComponent },
+    ])
   ],
   providers: [
     provideClientHydration()

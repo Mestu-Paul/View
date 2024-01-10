@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { StudentServiceService } from '../services/api/student-service.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-table',
@@ -9,34 +10,56 @@ import { StudentServiceService } from '../services/api/student-service.service';
 })
 
 export class TableComponent implements OnInit {
+
+  // ---------- variable declaration --------------
+  // for pagination
   pageNumber:number = 1;
   pageSize:number = 10;
   numberOfPages:number = 0;
+  total:any = 0;
   pagesArray = Array(this.numberOfPages).fill(0).map((x, i) => i + 1);
 
-  constructor(private studentService: StudentServiceService) {
-    
+  // Array to hold student data fetched from API
+  students: any[] = []; 
+
+  // for table show & hide 
+  showTable: boolean = true;
+
+  // for pop up message
+  displayPopup: boolean = false;
+  popupInfo:any = {
+    popupMessage:'',
+    popupHeader:'',
+    popupClasses:'',
   }
-  students: any[] = []; // Array to hold student data fetched from API
+
+  // for update info of a current student
+  updateInfo:any = {
+    updateStatus:false,
+    currentStudentInfo:null
+  }
+  // ----------------------------------------------
+
+  // constructor with studentService to get data from service
+  constructor(private studentService: StudentServiceService) {}
 
 
   ngOnInit(): void {
-    this.updateNumberOfPages();
+    this.updateNumberOfPages(); // Call function to fetch number of students
     this.fetchStudentData(this.pageNumber,this.pageSize); // Call function to fetch student data
   }
 
   // ------------ pagination update ------------
+  // by fetching total number of student calculate number of pages
   updateNumberOfPages(){
-    console.log("calling nod");
-    var total:any = 0;
     this.studentService.getNumberOfData().subscribe(
       (data) =>{
-        total = data;
-        this.numberOfPages = Math.floor((total+this.pageSize-1)/this.pageSize);
-        console.log("tesing ",this.numberOfPages,total);
+        this.total = data;
+        this.numberOfPages = Math.floor((this.total+this.pageSize-1)/this.pageSize);
       },
       (error)=>{
-        this.showPopup(`Error while retrieving number of Data. >> ${error}`,"Error","popup-header-delete");
+        console.log(`Error while retrieving number of Data. >> ${error}`);
+        // this.showPopup(`Error while retrieving number of Data. >> ${error}`,"Error","popup-header-delete");
       }
     );
   }
@@ -47,31 +70,39 @@ export class TableComponent implements OnInit {
   }
   // --------------------------------------------
 
-  // ---------- table and form hide show  ----------
-  showTable: boolean = true;
+
+
+  // ---------- table and form show-hide  ----------
   showAddForm() {
     this.showTable = false;
-    this.updateData = false;
+  }
+  
+  clearForm(){
+    this.updateInfo = {
+      updateStatus:false,
+      currentStudentInfo:null
+    }
+  }
+  update(){
+    this.showTable = true; 
+    this.clearForm();
+    this.fetchStudentData(this.pageNumber,this.pageSize);
   }
 
   cancel() {
-    console.log("clicked cancel in table");
     this.showTable = true; 
+    this.clearForm();
   }
   // -------------------------------------
 
   // -------- pop up message options ---------
-  displayPopup: boolean = false;
-  popupMessage: string = '';
-  popupHeader: string = '';
-  popupClasses: string = '';
-
-
   showPopup(msg:string,hdr:string,cls:string) {
-    this.popupMessage=msg; this.popupHeader=hdr;
-    this.popupClasses = cls; this.displayPopup = true;
+    // set data for popup message
+    this.popupInfo["popupMessage"] = msg;
+    this.popupInfo["popupHeader"] = hdr;
+    this.popupInfo["popupClasses"] = cls;
+    this.displayPopup = true;
   }
-
   closePopup() {
     this.displayPopup = false;
     this.fetchStudentData(this.pageNumber,this.pageSize);
@@ -79,36 +110,24 @@ export class TableComponent implements OnInit {
   // ------------------------------------------
 
   
-  // data fetch using get method 
+  //------------- data fetch using get method -------------
   fetchStudentData(pageNumber:number,pageSize:number) {
     this.studentService.getStudentsPage(pageNumber,pageSize).subscribe(
       (data) => {
-        this.students = data; // Assign the fetched data to the local students array
-        console.log('Fetched student data:', data);
+        if(data.isSuccess){
+          this.students = data.students;
+        }
+        else{
+          this.showPopup(data.message,"Error","popup-header-delete");
+        }
       },
       (error) => {
         console.error('Error fetching student data:', error);
       }
     );
   }
-
-  // data add using post method 
-  onSubmit(studentData: any): void {
-    this.showTable = true;
-    console.log(studentData);
-    this.studentService.addStudent(studentData).subscribe(
-      (response) => {
-        console.log('Student added successfully:', response);
-        this.showPopup(`Added ${studentData['name']}'s information`,'Add Student','popup-header-add');
-      },
-      (error) => {
-        console.error('Error adding student:', error);
-        this.showPopup(`Error : ${error}`,'Error','popup-header-delete');
-      });
-  }
-
   
-  // data delete using delete method 
+  // ------------ data delete using delete method -----------
   onDelete(studentId: string, studentName:string): void {
     this.studentService.deleteStudent(studentId).subscribe(
       () => {
@@ -122,42 +141,11 @@ export class TableComponent implements OnInit {
       );
   }
 
-  formName:string = '';
-  formDepartment:string = '';
-  formSession:string = '';
-  formGender:string = '';
-  // formId:string = '';
-  updateData:boolean=false;
-
-  formFields:string[] = ['','','','','']
-
+  // set data in form for update a current student
   readyFormToUpdate(student: any){
-    this.updateData=true;
+    this.updateInfo['updateStatus']=true;
+    this.updateInfo['currentStudentInfo']=student;
     this.showAddForm();
-    this.updateData=true;
-    // this.formId = student.id;
-    this.formFields[0] = student.name;
-    this.formFields[1] = student.department;
-    this.formFields[2] = student.session;
-    this.formFields[3] = student.gender;
-    this.formFields[4] = student.id;
-    // console.log("get date from row", this.formFields);
-  }
-  updateStudent(formData: any) {
-    console.log(formData['id']);
-    this.studentService.updateStudent(formData['id'], formData).subscribe(
-      (response) => {
-        console.log('Student updated successfully:', response);
-        this.showPopup(`Updated ${formData['name']}'s information`,'Update Student','popup-header-update');
-      },
-      (error) => {
-        // console.error('Error updating student:', error);
-        this.showPopup(`Error while ${formData['name']}'s information updating ${error}`,'Error','popup-header-delete');
-        // Handle error
-      }
-    );
-    this.fetchStudentData(this.pageNumber,this.pageSize);
-    this.showTable = true;
   }
 
 }

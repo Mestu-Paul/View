@@ -1,30 +1,34 @@
-<app-popup *ngIf="displayPopup" [message]="popupMessage" 
-[header]="popupHeader"
-[classes]="popupClasses"
-(closePopup)="closePopup()"
-></app-popup>
+<app-popup *ngIf="displayPopup" [popupInfo]="popupInfo" (closePopup)="closePopup()"></app-popup>
+
 <div *ngIf="showTable; else addForm">
-    <div class="add-new">
-        <button (click)="showAddForm()" class="add-btn">Add New</button>
+    <div style="display: flex; justify-content: right; width: 90%; margin: 20px auto;">
+        <!-- <app-search></app-search> -->
+        <button (click)="showAddForm()" class="btn add-btn">Add New</button>
     </div>
     <table class="student-table">
         <thead>
             <tr>
-                <th>#</th>
+                <th style="text-align: center;">Student ID</th>
                 <th style="text-align: center;">Name</th>
                 <th style="text-align: center;">Department</th>
                 <th style="text-align: center;">Session</th>
                 <th style="text-align: center;">Gender</th>
+                <th style="text-align: center;">Phone</th>
+                <th style="text-align: center;">Address</th>
+                <th style="text-align: center;">Blood Group</th>
                 <th style="text-align: center;">Actions</th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let student of students">
-                <td>{{ student.id }}</td>
+                <td>{{ student.id}}</td>
                 <td>{{ student.name }}</td>
                 <td>{{ student.department }}</td>
                 <td>{{ student.session }}</td>
                 <td>{{ student.gender }}</td>
+                <td>{{ student.phone }}</td>
+                <td>{{ student.address?student.address:"Unknown" }}</td>
+                <td>{{ student.bloodGroup }}</td>
                 <td class="actions">
                     <button class="update-btn" (click)="readyFormToUpdate(student)">Update</button>
                     <button class="delete-btn" (click)="onDelete(student.id,student.name)">Delete</button>
@@ -33,15 +37,15 @@
         </tbody>
     </table>
     <div class="pagination">
-        <div style="text-align: right; width: 90%;">
+        <!-- <div style="text-align: right; width: 90%;">
             <select [(ngModel)]="pageSize" style="text-align: right;" name="" id="">
                 <option value="10">10</option>
                 <option value="20">20</option>
                 <option value="30">30</option>
             </select>
-        </div>
+        </div> -->
         <a *ngFor="let i of [].constructor(numberOfPages); let pN = index"
-           [href]="'#'" 
+            [routerLink]="['/page', pN+1, pageSize]"
            (click)="updatePageNumber(pN+1)"
            class="btn" 
            [ngClass]="{'add-btn': pN+1 === pageNumber, 'add-btn-inactive': pN+1 !== pageNumber}">
@@ -51,9 +55,5 @@
 </div>
 
 <ng-template #addForm>
-    <app-add-form
-    [updateData]="updateData"
-    [formFields]="formFields"
-    (update)="updateStudent($event)"
-    (save)="onSubmit($event)" (cancel)="cancel()"></app-add-form>
+    <app-add-form [updateInfo]="updateInfo" (cancel)="cancel()" (update)="update()"></app-add-form>
 </ng-template>

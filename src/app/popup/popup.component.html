@@ -1,9 +1,9 @@
 <div class="popup" >
     <div class="popup-content">
-        <div class="popup-header {{classes}}">
-            {{header}}
+        <div class="popup-header {{popupInfo['popupClasses']}}">
+            {{popupInfo['popupHeader']}}
         </div>
-        <p>{{message}}</p>
+        <p>{{popupInfo['popupMessage']}}</p>
         <div class="footer">
             <button class="close" (click)="onCloseClick()">Close</button>
         </div>

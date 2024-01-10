@@ -1,28 +1,53 @@
-<app-popup *ngIf="displayPopup" [message]="popupMessage"
-[header]="popupHeader"
-[classes]="popupClasses"
- (closePopup)="closePopup()"></app-popup>
+<app-popup *ngIf="displayPopup" [popupInfo]="popupInfo" (closePopup)="closePopup()"></app-popup>
  <div class="data-form">
      <div class="form-title">
-        {{updateData?"Update":"Add New"}} Student's Information
+        {{updateInfo["updateStatus"]?"Update":"Add New"}} Student's Information
      </div>
     <form (ngSubmit)="onSubmit()" #myForm="ngForm">
         <!-- Your form fields go here -->
-        <Label>Student's Name:</Label>
-        <input type="text" placeholder="Name" [(ngModel)]="formFields[0]" name="name" required>
-        <Label>Student's Department Name:</Label>
-        <input type="text" placeholder="Department e.g CSE" [(ngModel)]="formFields[1]" name="dept" required>
-        <Label>Student Session:</Label>
-        <input type="text" placeholder="Session e.g 2020" [(ngModel)]="formFields[2]" name="session" required>
-        <Label>Student's Gender:</Label>
-        <select [(ngModel)]="formFields[3]" id="gender" name="gender" required>
+        <Label>Student's ID</Label>
+        <input type="text" placeholder="Students ID" [(ngModel)]="formFields['student_id']" name="student_id" required>
+    
+        <Label>Student's Name</Label>
+        <input type="text" placeholder="Name" [(ngModel)]="formFields['name']" name="name" required>
+
+        <Label>Department</Label>
+        <input type="text" placeholder="Department e.g CSE" [(ngModel)]="formFields['department']" name="department" required>
+
+        <Label>Session Year</Label>
+        <input type="text" placeholder="Session e.g 2020" [(ngModel)]="formFields['session']" name="session" required>
+
+        <Label>Phone Number</Label>
+        <input type="text" placeholder="Phone e.g +880110000000" [(ngModel)]="formFields['phone']" name="phone" required>
+        
+        <Label>Gender</Label>
+        <select [(ngModel)]="formFields['gender']" id="gender" name="gender" required>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
         </select>
         
+        <Label>Blood Group</Label>
+        <select [(ngModel)]="formFields['blood_group']" id="blood_group" name="blood_group" required>
+            <option value="Unknown">Unknown</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+        </select>
+        
+        <Label>Last donated at</Label>
+        <input type="Date"  [(ngModel)]="formFields['last_donated_at']" name="last_donated_at" required>
+        
+        <Label>Address : </Label>
+        <textarea rows="4"   [(ngModel)]="formFields['address']" name="address" required></textarea>
+        
         <div class="form-footer">
             <button class="delete-btn" type="button" (click)="onCancel()">Cancel</button>
-            <button class="{{updateData ? 'update-btn':'add-btn'}}" type="submit">{{updateData ? "Update":"Save"}}</button>
+            <button class="{{ updateInfo['updateStatus'] ? 'update-btn':'add-btn'}}" type="submit">{{updateInfo["updateStatus"] ? "Update":"Save"}}</button>
         </div>
     </form>
  </div>
