@@ -5,37 +5,39 @@
         <!-- <app-search></app-search> -->
         <button (click)="showAddForm()" class="btn add-btn">Add New</button>
     </div>
-    <table class="student-table">
-        <thead>
-            <tr>
-                <th style="text-align: center;">Student ID</th>
-                <th style="text-align: center;">Name</th>
-                <th style="text-align: center;">Department</th>
-                <th style="text-align: center;">Session</th>
-                <th style="text-align: center;">Gender</th>
-                <th style="text-align: center;">Phone</th>
-                <th style="text-align: center;">Address</th>
-                <th style="text-align: center;">Blood Group</th>
-                <th style="text-align: center;">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let student of students">
-                <td>{{ student.id}}</td>
-                <td>{{ student.name }}</td>
-                <td>{{ student.department }}</td>
-                <td>{{ student.session }}</td>
-                <td>{{ student.gender }}</td>
-                <td>{{ student.phone }}</td>
-                <td>{{ student.address?student.address:"Unknown" }}</td>
-                <td>{{ student.bloodGroup }}</td>
-                <td class="actions">
-                    <button class="update-btn" (click)="readyFormToUpdate(student)">Update</button>
-                    <button class="delete-btn" (click)="onDelete(student.id,student.name)">Delete</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div style="overflow-x: auto;">
+        <table class="student-table">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">Student ID</th>
+                    <th style="text-align: center;">Name</th>
+                    <th style="text-align: center;">Department</th>
+                    <th style="text-align: center;">Session</th>
+                    <th style="text-align: center;">Gender</th>
+                    <th style="text-align: center;">Phone</th>
+                    <th style="text-align: center;">Address</th>
+                    <th style="text-align: center;">Blood Group</th>
+                    <th style="text-align: center;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let student of students">
+                    <td>{{ student.studentId }}</td>
+                    <td>{{ student.name }}</td>
+                    <td>{{ student.department }}</td>
+                    <td>{{ student.session }}</td>
+                    <td>{{ student.gender }}</td>
+                    <td>{{ student.phone }}</td>
+                    <td>{{ student.address?student.address:"Unknown" }}</td>
+                    <td>{{ student.bloodGroup }}</td>
+                    <td class="actions">
+                        <button class="update-btn" (click)="readyFormToUpdate(student)">Update</button>
+                        <button class="delete-btn" (click)="onDelete(student.id,student.name)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <div class="pagination">
         <!-- <div style="text-align: right; width: 90%;">
             <select [(ngModel)]="pageSize" style="text-align: right;" name="" id="">

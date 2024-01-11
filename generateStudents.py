@@ -4,7 +4,7 @@ import random
 from faker import Faker
 fake = Faker()
 # API endpoint
-url = 'https://localhost:7181/api/Students/Post'
+url = 'https://localhost:7250/api/Students/CreateNewStudent'
 
 # Function to generate dummy data
 def generate_dummy_data():
@@ -12,17 +12,26 @@ def generate_dummy_data():
     departments = ["Computer Science", "Physics", "Biology", "Mathematics"]
     sessions = [i for i in range(2012,2022)]
     genders = ["Male", "Female"]
+    bloodGroup = ["A+","A-","B+","B-","AB+","AB-","O+","O-"]
+    phones = ["013","014","015","016","017","018","019"]
 
     dummy_data = {
         "name": fake.name(),
+        "studentId":random.choice(range(111111,9999999)),
         "department": random.choice(departments),
         "session": random.choice(sessions),
-        "gender": random.choice(genders)
+        "gender": random.choice(genders),
+        "bloodGroup": random.choice(bloodGroup),
+        "lastDonatedAt":"",
+        "address":fake.address(),
+        "phone":random.choice(phones)+str(random.choice(range(1111111,99999999))),
+
     }
     return dummy_data
 
+# print(generate_dummy_data())
 # Add 20 dummy data entries
-for _ in range(20):
+for _ in range(1):
     data = generate_dummy_data()
     headers = {'Content-type': 'application/json'}
 
