@@ -31,7 +31,7 @@ def generate_dummy_data():
 
 # print(generate_dummy_data())
 # Add 20 dummy data entries
-for _ in range(1):
+for _ in range(40):
     data = generate_dummy_data()
     headers = {'Content-type': 'application/json'}
 

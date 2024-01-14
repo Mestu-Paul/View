@@ -39,21 +39,14 @@
         </table>
     </div>
     <div class="pagination">
-        <!-- <div style="text-align: right; width: 90%;">
-            <select [(ngModel)]="pageSize" style="text-align: right;" name="" id="">
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-            </select>
-        </div> -->
-        <a *ngFor="let i of [].constructor(numberOfPages); let pN = index"
-            [routerLink]="['/page', pN+1, pageSize]"
-           (click)="updatePageNumber(pN+1)"
+        <a *ngFor="let pN of paginationArray"
+            [routerLink]="['/page', pN, pageSize]"
+           (click)="updatePageNumber(pN)"
            class="btn" 
-           [ngClass]="{'add-btn': pN+1 === pageNumber, 'add-btn-inactive': pN+1 !== pageNumber}">
-          {{ pN+1 }}
+           [ngClass]="{'add-btn': pN === pageNumber, 'disabled': pN==='...', 'add-btn-inactive':  (pN !=='...' && pN !== pageNumber)}">
+          {{ pN }}
         </a>
-      </div>
+    </div>
 </div>
 
 <ng-template #addForm>

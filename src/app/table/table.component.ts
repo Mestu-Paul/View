@@ -16,6 +16,7 @@ export class TableComponent implements OnInit {
   pageNumber:number = 1;
   pageSize:number = 10;
   numberOfPages:number = 0;
+  paginationArray:any[] = [];
   total:any = 0;
   pagesArray = Array(this.numberOfPages).fill(0).map((x, i) => i + 1);
 
@@ -50,12 +51,27 @@ export class TableComponent implements OnInit {
   }
 
   // ------------ pagination update ------------
+  
+  generatePaginationArray(){
+    this.paginationArray = [1];
+    let dist = 2;
+    console.log(this.pageNumber-dist,this.pageNumber+dist);
+    if(this.pageNumber-dist>1)this.paginationArray.push("...");
+    for (let index = Math.max(2,this.pageNumber-dist); index <= Math.min(this.numberOfPages-1,this.pageNumber+dist); index++) {
+      this.paginationArray.push(index);
+    }
+    if(this.pageNumber+dist<this.numberOfPages)this.paginationArray.push("...");
+    this.paginationArray.push(this.numberOfPages);
+    console.log(this.paginationArray);
+  }
+
   // by fetching total number of student calculate number of pages
   updateNumberOfPages(){
     this.studentService.getNumberOfData().subscribe(
       (data) =>{
         this.total = data;
         this.numberOfPages = Math.floor((this.total+this.pageSize-1)/this.pageSize);
+        this.generatePaginationArray();
       },
       (error)=>{
         console.log(`Error while retrieving number of Data. >> ${error}`);
@@ -63,9 +79,11 @@ export class TableComponent implements OnInit {
       }
     );
   }
+  
   updatePageNumber(pageNumber:number){
     console.log("clicked here");
     this.pageNumber = pageNumber;
+    this.generatePaginationArray();
     this.fetchStudentData(this.pageNumber,this.pageSize);
   }
   // --------------------------------------------
