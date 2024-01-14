@@ -6,7 +6,7 @@
     <form (ngSubmit)="onSubmit()" #myForm="ngForm">
         <!-- Your form fields go here -->
         <Label>Student's ID</Label>
-        <input type="text" placeholder="Students ID" [(ngModel)]="formFields['student_id']" name="student_id" required>
+        <input type="text" placeholder="Students ID" disabled="{{updateInfo['updateStatus']==true?'true':'false'}}" [(ngModel)]="formFields['student_id']" name="student_id" required>
     
         <Label>Student's Name</Label>
         <input type="text" placeholder="Name" [(ngModel)]="formFields['name']" name="name" required>
@@ -21,14 +21,13 @@
         <input type="text" placeholder="Phone e.g +880110000000" [(ngModel)]="formFields['phone']" name="phone" required>
         
         <Label>Gender</Label>
-        <select [(ngModel)]="formFields['gender']" id="gender" name="gender" required>
+        <select [(ngModel)]="formFields['gender']"  disabled="{{updateInfo['updateStatus']==true?'true':'false'}}" id="gender" name="gender" required>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
         </select>
         
         <Label>Blood Group</Label>
-        <select [(ngModel)]="formFields['blood_group']" id="blood_group" name="blood_group" required>
-            <option value="Unknown">Unknown</option>
+        <select [(ngModel)]="formFields['blood_group']" disabled="{{updateInfo['updateStatus']==true?'true':'false'}}" id="blood_group" name="blood_group" required>
             <option value="A+">A+</option>
             <option value="A-">A-</option>
             <option value="B+">B+</option>

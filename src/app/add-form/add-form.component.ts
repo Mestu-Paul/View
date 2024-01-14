@@ -1,5 +1,7 @@
 import { Component, EventEmitter, OnInit, Output, Input } from '@angular/core';
 import { StudentServiceService } from '../services/api/student-service.service';
+import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-add-form',
@@ -7,25 +9,10 @@ import { StudentServiceService } from '../services/api/student-service.service';
   styleUrls: ['./add-form.component.css']
 })
 export class AddFormComponent implements OnInit{
-  constructor(private studentService: StudentServiceService){}
-  formFieldsName:string[]=["Students ID","Student Name","Students Department", "Students Session", "Students Phone", "Students Gender", "Students Blood Group", "Last Donation Date" , "Address"];
-  @Input() formFields:any={
-  "id":"",
-  "student_id":"",
-  "name":"",
-  "department":"",
-  "session":"",
-  "phone":"",
-  "gender":"Male",
-  "blood_group":"Unknown",
-  "last_donated_at":"",
-   "address":null};
+  constructor(private studentService: StudentServiceService, private router:Router, private route:ActivatedRoute){}
+  @Input() formFields:any={};
 
-  popupInfo: any = {
-    popupMessage:'',
-    popupHeader:'',
-    popupClasses:'',
-  }
+  popupInfo: any = {}
 
   @Input() updateInfo:any = {
     updateStatus:false,
@@ -33,7 +20,14 @@ export class AddFormComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe((params:any)=>{
+      this.updateInfo = JSON.parse(params.updateInfo);
+    });   
+    console.log("-----------------------------");
+    console.log(this.updateInfo);
+    
     if(this.updateInfo["updateStatus"]){
+      console.log("updating.........");
       this.formFields["id"] = this.updateInfo["currentStudentInfo"]["id"];
       this.formFields["student_id"] = this.updateInfo["currentStudentInfo"]["studentId"];
       this.formFields["name"]=this.updateInfo["currentStudentInfo"]["name"],
@@ -45,6 +39,10 @@ export class AddFormComponent implements OnInit{
       this.formFields["last_donated_at"]=this.updateInfo["currentStudentInfo"]["lastDonatedAt"],
       this.formFields["address"]=this.updateInfo["currentStudentInfo"]["address"]
     }
+    else{
+      this.clearForm();
+    }
+    console.log(this.formFields);
   }
 
   // -------- pop up message options ---------
@@ -58,14 +56,8 @@ export class AddFormComponent implements OnInit{
   }
   closePopup() {
     this.displayPopup = false;
-    this.update.emit();
   }
   // ------------------------------------------
-
-  @Output() save: EventEmitter<any> = new EventEmitter<any>();
-  @Output() update: EventEmitter<any> = new EventEmitter<any>();
-  @Output() cancel: EventEmitter<void> = new EventEmitter<void>();
-
 
 
   onSubmit() {
@@ -109,11 +101,12 @@ export class AddFormComponent implements OnInit{
       );
     }
     this.clearForm();
+    this.router.navigate(['']);
   }
   
   onCancel() {
     this.clearForm();
-    this.cancel.emit();
+    this.router.navigate(['']);
   }
 
   clearForm() {
@@ -127,7 +120,7 @@ export class AddFormComponent implements OnInit{
     this.formFields["session"]="";
     this.formFields["phone"]="";
     this.formFields["gender"]="Male";
-    this.formFields["blood_group"]="Unknown";
+    this.formFields["blood_group"]="A+";
     this.formFields["last_donated_at"]="";
     this.formFields["address"]="";
 

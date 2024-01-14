@@ -1,9 +1,9 @@
 <app-popup *ngIf="displayPopup" [popupInfo]="popupInfo" (closePopup)="closePopup()"></app-popup>
 
-<div *ngIf="showTable; else addForm">
+<div>
     <div style="display: flex; justify-content: right; width: 90%; margin: 20px auto;">
         <!-- <app-search></app-search> -->
-        <button (click)="showAddForm()" class="btn add-btn">Add New</button>
+        <button [routerLink]="'/create'" class="btn add-btn">Add New</button>
     </div>
     <div style="overflow-x: auto;">
         <table class="student-table">
@@ -17,6 +17,7 @@
                     <th style="text-align: center;">Phone</th>
                     <th style="text-align: center;">Address</th>
                     <th style="text-align: center;">Blood Group</th>
+                    <th style="text-align: center;">Last Donated</th>
                     <th style="text-align: center;">Actions</th>
                 </tr>
             </thead>
@@ -30,6 +31,7 @@
                     <td>{{ student.phone }}</td>
                     <td>{{ student.address?student.address:"Unknown" }}</td>
                     <td>{{ student.bloodGroup }}</td>
+                    <td>{{ student.lastDonatedAt }}</td>
                     <td class="actions">
                         <button class="update-btn" (click)="readyFormToUpdate(student)">Update</button>
                         <button class="delete-btn" (click)="onDelete(student.id,student.name)">Delete</button>
@@ -48,7 +50,3 @@
         </a>
     </div>
 </div>
-
-<ng-template #addForm>
-    <app-add-form [updateInfo]="updateInfo" (cancel)="cancel()" (update)="update()"></app-add-form>
-</ng-template>
