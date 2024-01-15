@@ -70,21 +70,20 @@ export class AddFormComponent implements OnInit{
 
   onSubmit() {
     var data:any = {
-    id:this.formFields["id"],
-    studentId:this.formFields["student_id"],
     name:this.formFields["name"],
     department:this.formFields["department"],
     session:this.formFields["session"],
     phone:this.formFields["phone"],
-    gender:this.formFields["gender"],
-    bloodGroup:this.formFields["blood_group"],
     lastDonatedAt:this.formFields["last_donated_at"],
     address:this.formFields["address"]};
 
-    console.log(data);
-    console.log(this.updateInfo["updateStatus"]);
     if(!this.updateInfo["updateStatus"])
     {
+      
+      data['gender'] = this.formFields["gender"];
+      data['bloodGroup'] = this.formFields["blood_group"];
+      data['studentId']=this.formFields["student_id"];
+
       this.studentService.addStudent(data).subscribe(
         (response) => {
           console.log('Student added successfully:', response);
@@ -97,6 +96,7 @@ export class AddFormComponent implements OnInit{
     }
     else
     {
+      console.log(data);
       this.studentService.updateStudent(data['id'], data).subscribe(
         (response) => {
           console.log('Student updated successfully:', response);
