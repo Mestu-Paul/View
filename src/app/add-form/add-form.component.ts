@@ -9,17 +9,7 @@ import { StudentServiceService } from '../services/api/student-service.service';
 export class AddFormComponent implements OnInit{
   constructor(private studentService: StudentServiceService){}
   formFieldsName:string[]=["Students ID","Student Name","Students Department", "Students Session", "Students Phone", "Students Gender", "Students Blood Group", "Last Donation Date" , "Address"];
-  @Input() formFields:any={
-  "id":"",
-  "student_id":"",
-  "name":"",
-  "department":"",
-  "session":"",
-  "phone":"",
-  "gender":"Male",
-  "blood_group":"Unknown",
-  "last_donated_at":"",
-   "address":null};
+  @Input() formFields:any={};
 
   popupInfo: any = {
     popupMessage:'',
@@ -33,6 +23,7 @@ export class AddFormComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    console.log("i am here ", this.updateInfo);
     if(this.updateInfo["updateStatus"]){
       this.formFields["id"] = this.updateInfo["currentStudentInfo"]["id"];
       this.formFields["student_id"] = this.updateInfo["currentStudentInfo"]["studentId"];
@@ -45,6 +36,8 @@ export class AddFormComponent implements OnInit{
       this.formFields["last_donated_at"]=this.updateInfo["currentStudentInfo"]["lastDonatedAt"],
       this.formFields["address"]=this.updateInfo["currentStudentInfo"]["address"]
     }
+    else 
+      this.clearForm();
   }
 
   // -------- pop up message options ---------
@@ -97,7 +90,7 @@ export class AddFormComponent implements OnInit{
     else
     {
       console.log(data);
-      this.studentService.updateStudent(data['id'], data).subscribe(
+      this.studentService.updateStudent(this.formFields['id'], data).subscribe(
         (response) => {
           console.log('Student updated successfully:', response);
           this.showPopup(`Updated ${data['name']}'s information`,'Update Student','popup-header-update');
@@ -127,7 +120,7 @@ export class AddFormComponent implements OnInit{
     this.formFields["session"]="";
     this.formFields["phone"]="";
     this.formFields["gender"]="Male";
-    this.formFields["blood_group"]="Unknown";
+    this.formFields["blood_group"]="A+";
     this.formFields["last_donated_at"]="";
     this.formFields["address"]="";
 
