@@ -1,14 +1,13 @@
 import { Component, EventEmitter, OnInit, Output, Input } from '@angular/core';
-import { StudentServiceService } from '../services/api/student-service.service';
+import { StudentService } from '../services/student.service';
 
 @Component({
-  selector: 'app-add-form',
-  templateUrl: './add-form.component.html',
-  styleUrls: ['./add-form.component.css']
+  selector: 'app-form',
+  templateUrl: './form.component.html',
+  styleUrls: ['./form.component.css']
 })
-export class AddFormComponent implements OnInit{
-  constructor(private studentService: StudentServiceService){}
-  formFieldsName:string[]=["Students ID","Student Name","Students Department", "Students Session", "Students Phone", "Students Gender", "Students Blood Group", "Last Donation Date" , "Address"];
+export class FormComponent implements OnInit{
+  constructor(private studentService: StudentService){}
   @Input() formFields:any={};
 
   popupInfo: any = {
@@ -77,7 +76,7 @@ export class AddFormComponent implements OnInit{
       data['bloodGroup'] = this.formFields["blood_group"];
       data['studentId']=this.formFields["student_id"];
 
-      this.studentService.addStudent(data).subscribe(
+      this.studentService.create(data).subscribe(
         (response) => {
           console.log('Student added successfully:', response);
           this.showPopup(`Added ${data['name']}'s information`,'Add Student','popup-header-add');
@@ -90,7 +89,7 @@ export class AddFormComponent implements OnInit{
     else
     {
       console.log(data);
-      this.studentService.updateStudent(this.formFields['id'], data).subscribe(
+      this.studentService.update(this.formFields['id'], data).subscribe(
         (response) => {
           console.log('Student updated successfully:', response);
           this.showPopup(`Updated ${data['name']}'s information`,'Update Student','popup-header-update');
