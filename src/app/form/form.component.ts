@@ -1,15 +1,14 @@
 import { Component, EventEmitter, OnInit, Output, Input } from '@angular/core';
-import { StudentServiceService } from '../services/api/student-service.service';
-import { Router } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
+import { StudentService } from '../services/student.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-add-form',
-  templateUrl: './add-form.component.html',
-  styleUrls: ['./add-form.component.css']
+  selector: 'app-form',
+  templateUrl: './form.component.html',
+  styleUrls: ['./form.component.css']
 })
-export class AddFormComponent implements OnInit{
-  constructor(private studentService: StudentServiceService, private router:Router, private route:ActivatedRoute){}
+export class FormComponent implements OnInit{
+  constructor(private studentService: StudentService, private router:Router, private route:ActivatedRoute){}
   @Input() formFields:any={};
 
   popupInfo: any = {}
@@ -22,9 +21,7 @@ export class AddFormComponent implements OnInit{
   ngOnInit(): void {
     this.route.queryParams.subscribe((params:any)=>{
       this.updateInfo = JSON.parse(params.updateInfo);
-    });   
-    console.log("-----------------------------");
-    console.log(this.updateInfo);
+    });  
     
     if(this.updateInfo["updateStatus"]){
       console.log("updating.........");
@@ -39,10 +36,8 @@ export class AddFormComponent implements OnInit{
       this.formFields["last_donated_at"]=this.updateInfo["currentStudentInfo"]["lastDonatedAt"],
       this.formFields["address"]=this.updateInfo["currentStudentInfo"]["address"]
     }
-    else{
+    else 
       this.clearForm();
-    }
-    console.log(this.formFields);
   }
 
   // -------- pop up message options ---------
@@ -62,22 +57,21 @@ export class AddFormComponent implements OnInit{
 
   onSubmit() {
     var data:any = {
-    id:this.formFields["id"],
-    studentId:this.formFields["student_id"],
     name:this.formFields["name"],
     department:this.formFields["department"],
     session:this.formFields["session"],
     phone:this.formFields["phone"],
-    gender:this.formFields["gender"],
-    bloodGroup:this.formFields["blood_group"],
     lastDonatedAt:this.formFields["last_donated_at"],
     address:this.formFields["address"]};
 
-    console.log(data);
-    console.log(this.updateInfo["updateStatus"]);
     if(!this.updateInfo["updateStatus"])
     {
-      this.studentService.addStudent(data).subscribe(
+      
+      data['gender'] = this.formFields["gender"];
+      data['bloodGroup'] = this.formFields["blood_group"];
+      data['studentId']=this.formFields["student_id"];
+
+      this.studentService.create(data).subscribe(
         (response) => {
           console.log('Student added successfully:', response);
           this.showPopup(`Added ${data['name']}'s information`,'Add Student','popup-header-add');
@@ -89,7 +83,8 @@ export class AddFormComponent implements OnInit{
     }
     else
     {
-      this.studentService.updateStudent(data['id'], data).subscribe(
+      console.log(data);
+      this.studentService.update(this.formFields['id'], data).subscribe(
         (response) => {
           console.log('Student updated successfully:', response);
           this.showPopup(`Updated ${data['name']}'s information`,'Update Student','popup-header-update');

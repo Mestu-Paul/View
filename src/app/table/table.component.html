@@ -3,7 +3,7 @@
 <div>
     <div style="display: flex; justify-content: right; width: 90%; margin: 20px auto;">
         <!-- <app-search></app-search> -->
-        <button [routerLink]="'/create'" class="btn add-btn">Add New</button>
+        <button (click)="showAddForm()" [routerLink]="'create'"  class="btn add-btn">Add New</button>
     </div>
     <div style="overflow-x: auto;">
         <table class="student-table">
@@ -33,7 +33,7 @@
                     <td>{{ student.bloodGroup }}</td>
                     <td>{{ student.lastDonatedAt }}</td>
                     <td class="actions">
-                        <button class="update-btn" (click)="readyFormToUpdate(student)">Update</button>
+                        <button [routerLink]="['update',student.studentId]" class="update-btn" (click)="readyFormToUpdate(student)">Update</button>
                         <button class="delete-btn" (click)="onDelete(student.id,student.name)">Delete</button>
                     </td>
                 </tr>
@@ -50,3 +50,8 @@
         </a>
     </div>
 </div>
+
+<ng-template #addForm>
+    <app-form [updateInfo]="updateInfo" (cancel)="cancel()" (update)="update()"></app-form>
+</ng-template>
+

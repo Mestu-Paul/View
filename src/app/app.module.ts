@@ -6,10 +6,10 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { TableComponent } from './table/table.component';
 import { PopupComponent } from './popup/popup.component';
-import { AddFormComponent } from './add-form/add-form.component';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { SearchComponent } from './search/search.component';
+import { FormComponent } from './form/form.component';
 
 // const routes: Routes = [
 //   { path: './add-new-form', component: AddFormComponent },
@@ -18,10 +18,10 @@ import { SearchComponent } from './search/search.component';
   declarations: [
     AppComponent,
     HeaderComponent,
-    TableComponent,
     PopupComponent,
-    AddFormComponent,
-    SearchComponent
+    SearchComponent,
+    FormComponent,
+    TableComponent
   ],
   imports: [
     BrowserModule,

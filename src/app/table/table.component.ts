@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { StudentServiceService } from '../services/api/student-service.service';
+import { StudentService } from '../services/student.service';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -24,6 +24,9 @@ export class TableComponent implements OnInit {
   // Array to hold student data fetched from API
   students: any[] = []; 
 
+  // for table show & hide 
+  showTable: boolean = true;
+
   // for pop up message
   displayPopup: boolean = false;
   popupInfo:any = {
@@ -40,7 +43,7 @@ export class TableComponent implements OnInit {
   // ----------------------------------------------
 
   // constructor with studentService to get data from service
-  constructor(private studentService: StudentServiceService, private router:Router) {}
+  constructor(private studentService: StudentService, private router:Router) {}
 
 
   ngOnInit(): void {
@@ -65,7 +68,7 @@ export class TableComponent implements OnInit {
 
   // by fetching total number of student calculate number of pages
   updateNumberOfPages(){
-    this.studentService.getNumberOfStudent().subscribe(
+    this.studentService.count().subscribe(
       (data) =>{
         this.total = data;
         this.numberOfPages = Math.floor((this.total+this.pageSize-1)/this.pageSize);
@@ -79,13 +82,34 @@ export class TableComponent implements OnInit {
   }
   
   updatePageNumber(pageNumber:number){
-    console.log("clicked here");
     this.pageNumber = pageNumber;
     this.generatePaginationArray();
     this.fetchStudentData(this.pageNumber,this.pageSize);
   }
   // --------------------------------------------
 
+  // ---------- table and form show-hide  ----------
+  showAddForm() {
+    this.showTable = false;
+  }
+  
+  clearForm(){
+    this.updateInfo = {
+      updateStatus:false,
+      currentStudentInfo:null
+    }
+  }
+  update(){
+    this.showTable = true; 
+    this.clearForm();
+    this.fetchStudentData(this.pageNumber,this.pageSize);
+  }
+
+  cancel() {
+    this.showTable = true; 
+    this.clearForm();
+  }
+  // -------------------------------------
 
   // -------- pop up message options ---------
   showPopup(msg:string,hdr:string,cls:string) {
@@ -104,7 +128,7 @@ export class TableComponent implements OnInit {
   
   //------------- data fetch using get method -------------
   fetchStudentData(pageNumber:number,pageSize:number) {
-    this.studentService.getStudentsPage(pageNumber,pageSize).subscribe(
+    this.studentService.filterByPage(pageNumber,pageSize).subscribe(
       (data) => {
         if(data.isSuccess){
           this.students = data.students;
@@ -121,7 +145,7 @@ export class TableComponent implements OnInit {
   
   // ------------ data delete using delete method -----------
   onDelete(studentId: string, studentName:string): void {
-    this.studentService.deleteStudent(studentId).subscribe(
+    this.studentService.delete(studentId).subscribe(
       () => {
         console.log(studentName,'Student deleted successfully');
         this.showPopup(`Deleted ${studentName}'s information`,'Delete Student','popup-header-delete');
@@ -139,6 +163,5 @@ export class TableComponent implements OnInit {
     this.updateInfo['currentStudentInfo']=student;
     this.router.navigate(['update', student.studentId], { queryParams : { updateInfo: JSON.stringify(this.updateInfo) } });
   }
-
 }
 
