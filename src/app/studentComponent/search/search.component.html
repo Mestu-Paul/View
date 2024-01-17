@@ -1,0 +1,9 @@
+<select class="mx" name="" id="" [(ngModel)]="filterBy">
+    <option value="studentId">Student ID</option>
+    <option value="name">Name</option>
+    <option value="department">Department</option>
+    <option value="session">Session</option>
+    <option value="gender">Gender</option>
+</select>
+<input class="mx" type="text" placeholder="Search" [(ngModel)]="searchText">
+<button class="mx add-btn" (click)="search()">Search</button>

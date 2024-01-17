@@ -1,9 +1,9 @@
 <app-popup *ngIf="displayPopup" [popupInfo]="popupInfo" (closePopup)="closePopup()"></app-popup>
 
 <div>
-    <div style="display: flex; justify-content: right; width: 90%; margin: 20px auto;">
-        <!-- <app-search></app-search> -->
-        <button (click)="showAddForm()" [routerLink]="'create'"  class="btn add-btn">Add New</button>
+    <div style="display: flex; justify-content: space-between; width: 90%; margin: 20px auto;">
+        <app-search></app-search>
+        <button (click)="showAddForm()" [routerLink]="'/create-student'"  class="btn add-btn">Add New</button>
     </div>
     <div style="overflow-x: auto;">
         <table class="student-table">
@@ -33,7 +33,7 @@
                     <td>{{ student.bloodGroup }}</td>
                     <td>{{ student.lastDonatedAt }}</td>
                     <td class="actions">
-                        <button [routerLink]="['update',student.studentId]" class="update-btn" (click)="readyFormToUpdate(student)">Update</button>
+                        <button [routerLink]="['update-student',student.studentId]" class="update-btn" (click)="readyFormToUpdate(student)">Update</button>
                         <button class="delete-btn" (click)="onDelete(student.id,student.name)">Delete</button>
                     </td>
                 </tr>

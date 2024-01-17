@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { FormComponent } from './form/form.component';
-import { TableComponent } from './table/table.component';
+import { FormComponent } from './studentComponent/form/form.component';
+import { TableComponent } from './studentComponent/table/table.component';
 
 const routes: Routes = [
   {path:'',component:TableComponent},
-  {path:'create',component:FormComponent},
-  {path:'update/:id',component:FormComponent},
+  {path:'create-student',component:FormComponent},
+  {path:'update-student/:id',component:FormComponent},
 ];
 
 @NgModule({

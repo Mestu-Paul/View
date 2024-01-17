@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output, Input } from '@angular/core';
-import { StudentService } from '../services/student.service';
+import { StudentService } from '../../services/student.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -18,11 +18,7 @@ export class FormComponent implements OnInit{
     currentStudentInfo:null
   }
 
-  ngOnInit(): void {
-    this.route.queryParams.subscribe((params:any)=>{
-      this.updateInfo = JSON.parse(params.updateInfo);
-    });  
-    
+  ngOnInit(): void {    
     if(this.updateInfo["updateStatus"]){
       console.log("updating.........");
       this.formFields["id"] = this.updateInfo["currentStudentInfo"]["id"];

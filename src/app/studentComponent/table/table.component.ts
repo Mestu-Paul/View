@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { StudentService } from '../services/student.service';
-import { Observable } from 'rxjs';
+import { StudentService } from '../../services/student.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -102,6 +100,7 @@ export class TableComponent implements OnInit {
   update(){
     this.showTable = true; 
     this.clearForm();
+    this.updateNumberOfPages();
     this.fetchStudentData(this.pageNumber,this.pageSize);
   }
 
@@ -155,13 +154,14 @@ export class TableComponent implements OnInit {
         this.showPopup(`Error while ${studentName}'s information deleting ${error}`,'Error','popup-header-delete');
       }
       );
+      this.updateNumberOfPages();
   }
 
   // set data in form for update a current student
   readyFormToUpdate(student: any){
     this.updateInfo['updateStatus']=true;
     this.updateInfo['currentStudentInfo']=student;
-    this.router.navigate(['update', student.studentId], { queryParams : { updateInfo: JSON.stringify(this.updateInfo) } });
+    this.showAddForm();
   }
 }
 

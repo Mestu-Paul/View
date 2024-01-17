@@ -1,26 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-interface StudentData {
-  students: {
-    id: string;
-    createdAt: Date | null;
-    lastUpdatedAt: Date | null;
-    studentId: string | null;
-    name: string;
-    department: string;
-    session: string;
-    phone: string | null;
-    gender: string;
-    bloodGroup: string | null;
-    lastDonatedAt: Date | null;
-    address: string | null;
-  }[];
-  message: string;
-  isSuccess: boolean;
-}
-
+import { Student } from '../models/student'
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +10,6 @@ interface StudentData {
 export class StudentService {
 
   private apiUrl = 'https://localhost:7250/api/student';
-
   constructor(private http: HttpClient) { }
 
   // Method to fetch student data from the API
@@ -38,9 +18,14 @@ export class StudentService {
     return this.http.get<any[]>(url);
   }
 
-  filterByPage(pageNumber: number, pageSize: number): Observable<StudentData> {
+  filterByPage(pageNumber: number, pageSize: number): Observable<Student> {
     const url = `${this.apiUrl}/filterByPage?pageNumber=${pageNumber}&pageSize=${pageSize}`;
-    return  this.http.get<StudentData>(url);
+    return  this.http.get<Student>(url);
+  }
+
+  customFilter(filterBy:string, filterText:string):Observable<Student>{
+    const url = `${this.apiUrl}/customFilter?pageNumber=${1}&filterBy=${filterBy}&filterText=${filterText}`;
+    return  this.http.get<Student>(url);
   }
 
   create(studentData: any): Observable<any> {
