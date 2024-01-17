@@ -56,14 +56,12 @@ export class TableComponent implements OnInit {
   generatePaginationArray(){
     this.paginationArray = [1];
     let dist = 2;
-    console.log(this.pageNumber-dist,this.pageNumber+dist);
     if(this.pageNumber-dist>1)this.paginationArray.push("...");
     for (let index = Math.max(2,this.pageNumber-dist); index <= Math.min(this.numberOfPages-1,this.pageNumber+dist); index++) {
       this.paginationArray.push(index);
     }
     if(this.pageNumber+dist<this.numberOfPages)this.paginationArray.push("...");
     this.paginationArray.push(this.numberOfPages);
-    console.log(this.paginationArray);
   }
 
   // by fetching total number of student calculate number of pages
@@ -142,17 +140,20 @@ export class TableComponent implements OnInit {
       }
     );
   }
+
+  customFilter(filteredStudents: any){
+    console.log("-----",filteredStudents);
+    this.students = filteredStudents;
+  }
   
   // ------------ data delete using delete method -----------
   onDelete(studentId: string, studentName:string): void {
     this.studentService.delete(studentId).subscribe(
       () => {
         console.log(studentName,'Student deleted successfully');
-        this.showPopup(`Deleted ${studentName}'s information`,'Delete Student','popup-header-delete');
       },
       (error) => {
         console.error('Error deleting student:', error);
-        this.showPopup(`Error while ${studentName}'s information deleting ${error}`,'Error','popup-header-delete');
       }
       );
   }
@@ -161,7 +162,7 @@ export class TableComponent implements OnInit {
   readyFormToUpdate(student: any){
     this.updateInfo['updateStatus']=true;
     this.updateInfo['currentStudentInfo']=student;
-    this.router.navigate(['update', student.studentId], { queryParams : { updateInfo: JSON.stringify(this.updateInfo) } });
+    this.showAddForm();
   }
 }
 

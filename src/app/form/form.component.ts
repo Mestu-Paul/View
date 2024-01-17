@@ -18,13 +18,11 @@ export class FormComponent implements OnInit{
     currentStudentInfo:null
   }
 
+  @Output() cancel: EventEmitter<void> = new EventEmitter<void>();
+
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params:any)=>{
-      this.updateInfo = JSON.parse(params.updateInfo);
-    });  
-    
+
     if(this.updateInfo["updateStatus"]){
-      console.log("updating.........");
       this.formFields["id"] = this.updateInfo["currentStudentInfo"]["id"];
       this.formFields["student_id"] = this.updateInfo["currentStudentInfo"]["studentId"];
       this.formFields["name"]=this.updateInfo["currentStudentInfo"]["name"],
@@ -95,13 +93,12 @@ export class FormComponent implements OnInit{
         }
       );
     }
-    this.clearForm();
-    this.router.navigate(['']);
+    this.onCancel();
   }
   
   onCancel() {
     this.clearForm();
-    this.router.navigate(['']);
+    this.cancel.emit();
   }
 
   clearForm() {

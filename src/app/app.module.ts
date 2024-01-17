@@ -27,10 +27,7 @@ import { FormComponent } from './form/form.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule ,
-    RouterModule.forRoot([
-      { path: 'page/:pageNumber/:pageSize', component: TableComponent },
-    ])
+    FormsModule
   ],
   providers: [
     provideClientHydration()

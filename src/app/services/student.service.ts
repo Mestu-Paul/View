@@ -43,6 +43,11 @@ export class StudentService {
     return  this.http.get<StudentData>(url);
   }
 
+  customFilter(pageNumber: number, filterBy: string, filterText: string): Observable<StudentData> {
+    const url = `${this.apiUrl}/customFilter?pageNumber=${pageNumber}&filterBy=${filterBy}&filterText=${filterText}`;
+    return  this.http.get<StudentData>(url);
+  }
+
   create(studentData: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/create`, studentData);
   }
