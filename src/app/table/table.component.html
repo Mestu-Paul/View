@@ -2,7 +2,7 @@
 
 <div *ngIf="showTable else addForm">
     <div style="display: flex; justify-content: space-between; width: 90%; margin: 20px auto;">
-        <app-search (filteredStudents)="customFilter($event)"></app-search>
+        <app-search (updateFilterParameter)="updateFilterParameter($event)"></app-search>
         <div>
             <button routerLink="/create" class="btn add-btn">Add New</button>
         </div>

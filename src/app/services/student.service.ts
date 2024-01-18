@@ -31,10 +31,9 @@ export class StudentService {
   private apiUrl = 'https://localhost:7250/api/student';
 
   constructor(private http: HttpClient) { }
-
   // Method to fetch student data from the API
-  count():Observable<any[]>{
-    const url = `${this.apiUrl}/count`;
+  count(filterBy: string, filterText: string):Observable<any[]>{
+    const url = `${this.apiUrl}/countCustomFilter?`+(filterText?`${filterBy}=${filterText}`:'');
     return this.http.get<any[]>(url);
   }
 
@@ -43,9 +42,9 @@ export class StudentService {
     return  this.http.get<StudentData>(url);
   }
 
-  customFilter(pageNumber: number, filterBy: string, filterText: string): Observable<StudentData> {
-    const url = `${this.apiUrl}/customFilter?pageNumber=${pageNumber}&filterBy=${filterBy}&filterText=${filterText}`;
-    return  this.http.get<StudentData>(url);
+  customFilter(pageNumber: number, filterBy: string, filterText: string): Observable<any[]> {
+    const url = `${this.apiUrl}/customFilter?pageNumber=${pageNumber}`+(filterText?`&${filterBy}=${filterText}`:'');
+    return  this.http.get<any[]>(url);
   }
 
   create(studentData: any): Observable<any> {

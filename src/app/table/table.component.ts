@@ -13,9 +13,13 @@ import { Router } from '@angular/router';
 export class TableComponent implements OnInit {
 
   // ---------- variable declaration --------------
+  // for filter
+  pageSize: number = 10;
+  pageNumber: number = 1;
+  filterBy: string = '';
+  filterText: string = '';
+  
   // for pagination
-  pageNumber:number = 1;
-  pageSize:number = 10;
   numberOfPages:number = 0;
   paginationArray:any[] = [];
   total:any = 0;
@@ -48,7 +52,7 @@ export class TableComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateNumberOfPages(); // Call function to fetch number of students
-    this.fetchStudentData(this.pageNumber,this.pageSize); // Call function to fetch student data
+    this.fetchStudentData(); // Call function to fetch student data
   }
 
   // ------------ pagination update ------------
@@ -66,7 +70,7 @@ export class TableComponent implements OnInit {
 
   // by fetching total number of student calculate number of pages
   updateNumberOfPages(){
-    this.studentService.count().subscribe(
+    this.studentService.count(this.filterBy, this.filterText).subscribe(
       (data) =>{
         this.total = data;
         this.numberOfPages = Math.floor((this.total+this.pageSize-1)/this.pageSize);
@@ -82,7 +86,7 @@ export class TableComponent implements OnInit {
   updatePageNumber(pageNumber:number){
     this.pageNumber = pageNumber;
     this.generatePaginationArray();
-    this.fetchStudentData(this.pageNumber,this.pageSize);
+    this.fetchStudentData();
   }
   // --------------------------------------------
 
@@ -100,7 +104,7 @@ export class TableComponent implements OnInit {
   update(){
     this.showTable = true; 
     this.clearForm();
-    this.fetchStudentData(this.pageNumber,this.pageSize);
+    this.fetchStudentData();
   }
 
   cancel() {
@@ -119,21 +123,17 @@ export class TableComponent implements OnInit {
   }
   closePopup() {
     this.displayPopup = false;
-    this.fetchStudentData(this.pageNumber,this.pageSize);
+    this.fetchStudentData();
   }
   // ------------------------------------------
 
   
   //------------- data fetch using get method -------------
-  fetchStudentData(pageNumber:number,pageSize:number) {
-    this.studentService.filterByPage(pageNumber,pageSize).subscribe(
+  fetchStudentData() {
+    this.studentService.customFilter(this.pageNumber, this.filterBy, this.filterText).subscribe(
       (data) => {
-        if(data.isSuccess){
-          this.students = data.students;
-        }
-        else{
-          this.showPopup(data.message,"Error","popup-header-delete");
-        }
+        console.log(data);
+        this.students = data;
       },
       (error) => {
         console.error('Error fetching student data:', error);
@@ -141,9 +141,11 @@ export class TableComponent implements OnInit {
     );
   }
 
-  customFilter(filteredStudents: any){
-    console.log("-----",filteredStudents);
-    this.students = filteredStudents;
+  updateFilterParameter(filterParameter: any){
+    this.filterBy = filterParameter['filterBy'];
+    this.filterText = filterParameter['filterText'];
+    this.fetchStudentData();
+    this.updateNumberOfPages();
   }
   
   // ------------ data delete using delete method -----------
