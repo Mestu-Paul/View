@@ -1,63 +1,87 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-interface StudentData {
-  students: {
-    id: string;
-    createdAt: Date | null;
-    lastUpdatedAt: Date | null;
-    studentId: string | null;
-    name: string;
-    department: string;
-    session: string;
-    phone: string | null;
-    gender: string;
-    bloodGroup: string | null;
-    lastDonatedAt: Date | null;
-    address: string | null;
-  }[];
-  message: string;
-  isSuccess: boolean;
-}
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
+import { FilterParameters } from '../_models/FilterParameters';
+import { FilterResponse } from '../_models/FilterResponse';
+import { StudentFrom } from '../_models/StudentForm';
 
 
 @Injectable({
   providedIn: 'root'
 })
 
+
 export class StudentService {
 
   private apiUrl = 'https://localhost:7250/api/student';
+  filterParameters: FilterParameters = new FilterParameters();
+  updateStudentInfo = {
+    formFields: new StudentFrom(),
+    updateStatus: false
+  }
 
   constructor(private http: HttpClient) { }
-  // Method to fetch student data from the API
-  count(filterBy: string, filterText: string):Observable<any[]>{
-    const url = `${this.apiUrl}/countCustomFilter?`+(filterText?`${filterBy}=${filterText}`:'');
-    return this.http.get<any[]>(url);
+
+  setFilterParameters(filterParameters: FilterParameters){
+    this.filterParameters = filterParameters;
   }
 
-  filterByPage(pageNumber: number, pageSize: number): Observable<StudentData> {
-    const url = `${this.apiUrl}/filterByPage?pageNumber=${pageNumber}&pageSize=${pageSize}`;
-    return  this.http.get<StudentData>(url);
+  getFilterParameters(){
+    return this.filterParameters;
   }
 
-  customFilter(pageNumber: number, filterBy: string, filterText: string): Observable<any[]> {
-    const url = `${this.apiUrl}/customFilter?pageNumber=${pageNumber}`+(filterText?`&${filterBy}=${filterText}`:'');
-    return  this.http.get<any[]>(url);
+  setFormFields(formFields: StudentFrom){
+    this.updateStudentInfo['formFields'] = formFields;
+    this.updateStudentInfo['updateStatus'] = true;
+  }
+
+  getFormFields(){
+    return this.updateStudentInfo;
+  }
+
+  resetFormFields(){
+    this.updateStudentInfo['formFields'] = new StudentFrom();
+    this.updateStudentInfo['updateStatus'] = false;
+  };
+
+  customFilter(filterParameters: FilterParameters): Observable<FilterResponse> {
+    let params = new HttpParams();
+    if(filterParameters.gender)
+      params = params.append("gender", filterParameters.gender);
+    if(filterParameters.department)
+      params = params.append("department", filterParameters.department);
+    if(filterParameters.session)
+      params = params.append("session", filterParameters.session);
+    if(filterParameters.bloodGroup)
+      params = params.append("bloodGroup", filterParameters.bloodGroup);
+    if(filterParameters.pageNumber)
+      params = params.append("pageNumber", filterParameters.pageNumber);
+
+    const url = `${this.apiUrl}/filter`;
+    return this.http.get<FilterResponse>(url, { observe: 'response', params }).pipe(
+      map((response: HttpResponse<FilterResponse>) => {
+        if (response.body) {
+          return {
+            students: response.body.students,
+            totalPages: response.body.totalPages
+          };
+        }
+        return new FilterResponse();
+      })
+    );
   }
 
   create(studentData: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/create`, studentData);
   }
 
-  // Method to delete a student by ID from the API
   delete(studentId: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/delete/${studentId}`, { observe: 'response', responseType: 'text' });
   }
 
-  update(studentId: string, updatedData: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/update/${studentId}`, updatedData,{ observe: 'response', responseType: 'text' });
+  update(updatedData: StudentFrom): Observable<any> {
+    return this.http.put(`${this.apiUrl}/update/${updatedData.id}`, updatedData,{ observe: 'response', responseType: 'text' });
   }
+
 
 }

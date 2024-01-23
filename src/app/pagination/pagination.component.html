@@ -1,0 +1,11 @@
+<div class="d-flex justify-content-center mb-5">
+    <a class="btn btn-dark me-3" (click)="previous()" [ngClass]="{'disabled' : pageNumber===1 || numberOfPages<=0}">Previous</a>
+    <a *ngFor="let pN of paginationArray"
+    (click)="updatePageNumber(pN)"
+    class="btn mx-1" 
+    [ngClass]="{'btn-dark': pN === pageNumber ,
+        'disabled': pN==='...', 'btn-outline-dark':  (pN !=='...' && pN !== pageNumber)}">
+      {{ pN }}
+    </a>
+    <a class="btn btn-dark ms-3" (click)="next()" [ngClass]="{'disabled' : pageNumber===numberOfPages || numberOfPages<=0}">Next</a>
+</div>

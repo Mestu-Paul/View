@@ -4,7 +4,7 @@ import random
 from faker import Faker
 fake = Faker()
 # API endpoint
-url = 'https://localhost:7250/api/Students/CreateNewStudent'
+url = 'https://localhost:7250/api/student/create'
 
 # Function to generate dummy data
 def generate_dummy_data():
@@ -31,7 +31,7 @@ def generate_dummy_data():
 
 # print(generate_dummy_data())
 # Add 20 dummy data entries
-for _ in range(40):
+for _ in range(80):
     data = generate_dummy_data()
     headers = {'Content-type': 'application/json'}
 

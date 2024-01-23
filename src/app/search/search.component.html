@@ -1,9 +1,22 @@
-<select class="mx" name="" id="" [(ngModel)]="filterParameter['filterBy']">
-    <option value="studentId">Student ID</option>
-    <option value="name">Name</option>
-    <option value="department">Department</option>
-    <option value="session">Session</option>
-    <option value="gender">Gender</option>
+<label >Blood Group</label>
+<select class="mx-2" name="bloodGroup" id="" [(ngModel)]="filterParameters.bloodGroup" >
+    <option *ngFor="let blood of bloodGroups" [value]="blood">{{blood}}</option>
+    <option value="">Reset</option>
 </select>
-<input class="mx" type="text" placeholder="Search " [(ngModel)]="filterParameter['filterText']">
-<button class="mx add-btn" (click)="filter()">Search</button>
+
+<label >Session</label>
+<input class="mx-2" type="text" placeholder="i.g 2020" name="session" [(ngModel)]="filterParameters.session">
+
+<label >Department</label>
+<input class="mx-2" type="text" placeholder="i.g Physics" name="department" [(ngModel)]="filterParameters.department">
+
+<label >Gender</label>
+<select class="mx-2" name="gender" id="" [(ngModel)]="filterParameters.gender" >
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
+    <option value="">Reset</option>
+</select>
+
+<button class="btn btn-info mx-2" (click)="filter()">Search</button>
+
+<button class="btn btn-dark" (click)="resetFilter()" >Reset</button>
