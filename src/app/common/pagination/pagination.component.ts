@@ -6,18 +6,18 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
   styleUrl: './pagination.component.css'
 })
 export class PaginationComponent implements OnChanges{
-  
+
   @Input() numberOfPages:number = 0;
   @Input() pageNumber: number = 1;
 
   paginationArray:any[] = [];
   pagesArray = Array(this.numberOfPages).fill(0).map((x, i) => i + 1);
-  
+
   @Output() updatePage: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(){
   }
-  
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['numberOfPages']) {
       this.generatePaginationArray();
@@ -37,7 +37,7 @@ export class PaginationComponent implements OnChanges{
     if(this.numberOfPages>1)
       this.paginationArray.push(this.numberOfPages);
   }
-  
+
   updatePageNumber(pageNumber:number){
     this.pageNumber = pageNumber;
     this.generatePaginationArray();
@@ -45,11 +45,15 @@ export class PaginationComponent implements OnChanges{
   }
 
   previous(){
+    if(this.pageNumber<=0)return;
     this.pageNumber--;
     this.generatePaginationArray();
+    this.updatePage.emit(this.pageNumber);
   }
   next(){
+    if(this.pageNumber>=this.numberOfPages)return;
     this.pageNumber++;
     this.generatePaginationArray();
+    this.updatePage.emit(this.pageNumber);
   }
 }

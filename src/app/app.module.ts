@@ -3,12 +3,12 @@ import { BrowserModule, provideClientHydration } from '@angular/platform-browser
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './header/header.component';
-import { TableComponent } from './table/table.component';
+import { HeaderComponent } from './common/header/header.component';
+import { TableComponent } from './student/table/table.component';
 import { FormsModule } from '@angular/forms';
-import { SearchComponent } from './search/search.component';
-import { FormComponent } from './form/form.component';
-import { PaginationComponent } from './pagination/pagination.component';
+import { SearchComponent } from './student/search/search.component';
+import { FormComponent } from './student/form/form.component';
+import { PaginationComponent } from './common/pagination/pagination.component';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
@@ -34,7 +34,7 @@ import { CommonModule } from '@angular/common';
     FormsModule,
     ToastrModule.forRoot({
       positionClass: 'toast-bottom-right',
-      timeOut: 2000, 
+      timeOut: 2000,
       progressBar: true,
       progressAnimation: 'increasing',
     }),

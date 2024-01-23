@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output, Input } from '@angular/core';
-import { StudentService } from '../services/student.service';
+import { StudentService } from '../../_services/student.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { StudentFrom } from '../_models/StudentForm';
+import { StudentFrom } from '../../_models/StudentForm';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -52,7 +52,7 @@ export class FormComponent implements OnInit{
     }
     this.onCancel();
   }
-  
+
   onCancel() {
     this.cancel.emit();
     this.router.navigateByUrl('/');

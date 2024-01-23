@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { StudentService } from '../services/student.service';
+import { StudentService } from '../../_services/student.service';
 import { Router } from '@angular/router';
-import { FilterParameters } from '../_models/FilterParameters';
-import { StudentFrom } from '../_models/StudentForm';
+import { FilterParameters } from '../../_models/FilterParameters';
+import { StudentFrom } from '../../_models/StudentForm';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -16,15 +16,15 @@ export class TableComponent implements OnInit {
   // ---------- variable declaration --------------
   // for filter
   filterParameters: FilterParameters = new FilterParameters();
-  
+
   // for pagination
   numberOfPages:number = 0;
 
   // Array to hold student data fetched from API
-  students: any[] = []; 
+  students: any[] = [];
 
   // constructor with studentService to get data from service
-  constructor(private studentService: StudentService, private router:Router, 
+  constructor(private studentService: StudentService, private router:Router,
             private toastr: ToastrService) {}
 
 
@@ -38,7 +38,7 @@ export class TableComponent implements OnInit {
     this.fetchStudentData();
   }
   // --------------------------------------------
-  
+
   //------------- data fetch using get method -------------
   fetchStudentData() {
     this.studentService.customFilter(this.filterParameters).subscribe(
@@ -60,7 +60,7 @@ export class TableComponent implements OnInit {
     this.filterParameters = filterParameters;
     this.fetchStudentData();
   }
-  
+
   // ------------ data delete using delete method -----------
   delete(studentId: string, studentName:string): void {
     // if(!confirm("Are you sure to delete the student?"))return;
@@ -82,6 +82,6 @@ export class TableComponent implements OnInit {
     this.studentService.setFormFields(student);
     this.router.navigateByUrl('/update');
   }
-  
+
 }
 

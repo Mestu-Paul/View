@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { StudentService } from '../services/student.service';
+import { StudentService } from '../../_services/student.service';
 import { Router } from '@angular/router';
-import { FilterParameters } from '../_models/FilterParameters';
+import { FilterParameters } from '../../_models/FilterParameters';
 
 @Component({
   selector: 'app-search',
@@ -9,11 +9,11 @@ import { FilterParameters } from '../_models/FilterParameters';
   styleUrl: './search.component.css'
 })
 export class SearchComponent implements OnInit {
-  constructor(private studentService: StudentService, private router:Router) {} 
+  constructor(private studentService: StudentService, private router:Router) {}
   filterParameters : FilterParameters = new FilterParameters();
 
   bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
-  
+
 
   @Output() updateFilterParameter : EventEmitter<any> = new EventEmitter<any>();
 
@@ -26,7 +26,7 @@ export class SearchComponent implements OnInit {
     this.studentService.setFilterParameters(this.filterParameters);
     this.updateFilterParameter.emit(this.filterParameters);
   }
-  
+
   resetFilter(){
     this.filterParameters = new FilterParameters();
     this.filter();
