@@ -83,5 +83,9 @@ export class StudentService {
     return this.http.put(`${this.apiUrl}/update/${updatedData.id}`, updatedData,{ observe: 'response', responseType: 'text' });
   }
 
+  partialUpdate(id:string, updatedData: any){
+    return this.http.patch(`${this.apiUrl}/partialUpdate/${id}`, updatedData);
+  }
+
 
 }

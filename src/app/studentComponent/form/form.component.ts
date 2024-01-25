@@ -31,11 +31,11 @@ export class FormComponent implements OnInit{
     {
       this.studentService.create(this.formFields).subscribe(
         (response) => {
-          this.toastr.success("Add new student");
+          this.toastr.success("Add new studentComponent");
           // console.log('Student added successfully:', response);
         },
         (error) => {
-          console.error('Error adding student:', error);
+          console.error('Error adding studentComponent:', error);
         });
     }
     else
@@ -46,7 +46,7 @@ export class FormComponent implements OnInit{
           // console.log('Student updated successfully:', response);
         },
         (error) => {
-          console.error('Error updating student:', error);
+          console.error('Error updating studentComponent:', error);
         }
       );
     }

@@ -1,0 +1,83 @@
+
+<div class="data-form">
+    <div class="form-title">
+       Update partially Student's Information
+    </div>
+   <form (ngSubmit)="onSubmit()" #partialUpdateForm="ngForm">
+        <div class="change-field text-end">
+            Changes indicator
+        </div>
+       <div class="form-group mb-1">
+            <details [class.change-field]="formFields.studentId!==oldformFields.studentId">
+                <summary><Label class="form-label">Student's ID</Label></summary>
+                <input class="form-control"  type="text"  placeholder="Students ID"  [(ngModel)]="formFields.studentId" name="student_id">
+            </details>           
+       </div>
+       
+       <div class="form-group mb-1">
+            <details [class.change-field]="formFields.name!==oldformFields.name">
+                <summary>
+                    <Label class="form-label">Student's Name</Label>
+                </summary>
+                <input class="form-control" type="text" placeholder="Name" [(ngModel)]="formFields.name" name="name">
+            </details>
+       </div>
+
+       <div class="form-group mb-1">
+            <details [class.change-field]="formFields.department!==oldformFields.department">
+                <summary>
+                    <Label class="form-label">Department</Label>
+                </summary>
+                <input class="form-control" type="text" placeholder="Department e.g CSE" [(ngModel)]="formFields.department" name="department">
+            </details>
+       </div>
+       
+       <div class="form-group mb-1">
+            <details [class.change-field]="formFields.session!==oldformFields.session">
+                <summary>
+                    <Label class="form-label">Session Year</Label>
+                </summary>
+                <input class="form-control" type="text" placeholder="Session e.g 2020" [(ngModel)]="formFields.session" name="session">
+            </details>
+       </div>
+       
+       <div class="form-group mb-1">
+            <details [class.change-field]="formFields.phone!==oldformFields.phone">
+                <summary>
+                    <Label class="form-label">Phone Number</Label>
+                </summary>
+                <input class="form-control" type="text" placeholder="Phone e.g +880110000000" [(ngModel)]="formFields.phone" name="phone">
+            </details>
+       </div>
+       
+       <div class="form-group mb-1">
+            <details [class.change-field]="formFields.lastDonatedAt!==oldformFields.lastDonatedAt">
+                <summary>
+                    <Label class="form-label">Last donated at</Label>
+                </summary>
+                <input class="form-control" type="Date"  [(ngModel)]="formFields.lastDonatedAt" name="LastDonatedAt">
+            </details>
+       </div>
+       
+       <div class="form-group mb-1">
+            <details [class.change-field]="formFields.address!==oldformFields.address">
+                <summary>
+                    <Label  class="form-label">Address </Label>
+                </summary>
+                <textarea class="form-control" rows="4"   [(ngModel)]="formFields.address" name="address"></textarea>
+            </details>
+       </div>
+       
+       
+       
+       <div class="form-footer">
+           <button class="btn btn-danger" type="button" (click)="onCancel()">Cancel</button>
+           <button class="btn btn-warning" type="submit">Update</button>
+       </div>
+   </form>
+</div>
+
+
+
+
+

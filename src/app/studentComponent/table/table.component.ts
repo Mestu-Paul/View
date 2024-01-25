@@ -20,7 +20,7 @@ export class TableComponent implements OnInit {
   // for pagination
   numberOfPages:number = 0;
 
-  // Array to hold student data fetched from API
+  // Array to hold studentComponent data fetched from API
   students: any[] = [];
 
   // constructor with studentService to get data from service
@@ -29,7 +29,7 @@ export class TableComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.fetchStudentData(); // Call function to fetch student data
+    this.fetchStudentData(); // Call function to fetch studentComponent data
   }
 
   // ------------ pagination update ------------
@@ -51,7 +51,7 @@ export class TableComponent implements OnInit {
         this.numberOfPages = data.totalPages;
       },
       (error) => {
-        console.error('Error fetching student data:', error);
+        console.error('Error fetching studentComponent data:', error);
       }
     );
   }
@@ -63,7 +63,7 @@ export class TableComponent implements OnInit {
 
   // ------------ data delete using delete method -----------
   delete(studentId: string, studentName:string): void {
-    // if(!confirm("Are you sure to delete the student?"))return;
+    if(!confirm("Are you sure to delete the studentComponent?"))return;
 
     this.studentService.delete(studentId).subscribe(
       () => {
@@ -72,15 +72,18 @@ export class TableComponent implements OnInit {
         this.fetchStudentData();
       },
       (error) => {
-        console.error('Error deleting student:', error);
+        console.error('Error deleting studentComponent:', error);
       }
       );
   }
 
-  // set data in form for update a current student
-  readyFormToUpdate(student: any){
+  // set data in form for update a current studentComponent
+  readyFormToUpdate(student: any, operation: string){
     this.studentService.setFormFields(student);
-    this.router.navigateByUrl('/update');
+    if(operation==='update')
+      this.router.navigateByUrl('/update');
+    else
+      this.router.navigateByUrl('/partial-update');
   }
 
 }

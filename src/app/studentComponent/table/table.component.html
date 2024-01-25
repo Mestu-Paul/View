@@ -35,7 +35,8 @@
                     <td>{{ student.bloodGroup }}</td>
                     <td>{{ student.lastDonatedAt }}</td>
                     <td class="actions">
-                        <button class="btn btn-warning me-2" (click)="readyFormToUpdate(student)">Update</button>
+                        <button class="btn btn-warning me-2" (click)="readyFormToUpdate(student, 'update')">Update</button>
+                        <button class="btn btn-warning me-2" style="opacity: 0.7;" (click)="readyFormToUpdate(student, 'partial-update')">Patial Update</button>
                         <button class="btn btn-danger" (click)="delete(student.id,student.name)">Delete</button>
                     </td>
                 </tr>

@@ -3,15 +3,16 @@ import { BrowserModule, provideClientHydration } from '@angular/platform-browser
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './common/header/header.component';
-import { TableComponent } from './student/table/table.component';
+import { HeaderComponent } from './commonComponent/header/header.component';
+import { TableComponent } from './studentComponent/table/table.component';
 import { FormsModule } from '@angular/forms';
-import { SearchComponent } from './student/search/search.component';
-import { FormComponent } from './student/form/form.component';
-import { PaginationComponent } from './common/pagination/pagination.component';
+import { SearchComponent } from './studentComponent/search/search.component';
+import { FormComponent } from './studentComponent/form/form.component';
+import { PaginationComponent } from './commonComponent/pagination/pagination.component';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
+import { PartialUpdateComponent } from './studentComponent/partial-update/partial-update.component';
 
 // const routes: Routes = [
 //   { path: './add-new-form', component: AddFormComponent },
@@ -23,7 +24,8 @@ import { CommonModule } from '@angular/common';
     SearchComponent,
     FormComponent,
     TableComponent,
-    PaginationComponent
+    PaginationComponent,
+    PartialUpdateComponent
   ],
   imports: [
     BrowserModule,
