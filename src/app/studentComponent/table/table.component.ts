@@ -41,19 +41,22 @@ export class TableComponent implements OnInit {
 
   //------------- data fetch using get method -------------
   fetchStudentData() {
-    this.studentService.customFilter(this.filterParameters).subscribe(
-      (data) => {
-        this.students = data.students;
-        if(this.students.length==0 && this.filterParameters.pageNumber>1){
-          this.filterParameters.pageNumber--;
-          this.fetchStudentData();
+    this.studentService.customFilter(this.filterParameters).subscribe({
+      next: response => {
+        if(response.body){
+          this.students = response.body.members;
+          if(this.students.length==0 && this.filterParameters.pageNumber>1){
+            this.filterParameters.pageNumber--;
+            this.fetchStudentData();
+          }
+          this.numberOfPages = response.body.totalPages;
         }
-        this.numberOfPages = data.totalPages;
       },
-      (error) => {
-        console.error('Error fetching studentComponent data:', error);
+      error: error =>{
+        this.toastr.error("You are not permitted");
+        this.router.navigateByUrl('/login');
       }
-    );
+    });
   }
 
   updateFilterParameter(filterParameters: FilterParameters){

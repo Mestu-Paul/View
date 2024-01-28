@@ -39,7 +39,7 @@ export class PartialUpdateComponent implements OnInit{
 
   onCancel(){
     this.studentService.resetFormFields();
-    this.router.navigateByUrl('/');
+    this.router.navigateByUrl('/students');
   }
   
 }

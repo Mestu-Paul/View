@@ -4,6 +4,9 @@ import { Observable, map } from 'rxjs';
 import { FilterParameters } from '../_models/FilterParameters';
 import { FilterResponse } from '../_models/FilterResponse';
 import { StudentFrom } from '../_models/StudentForm';
+import { AccountService } from './account.service';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 
 @Injectable({
@@ -20,7 +23,8 @@ export class StudentService {
     updateStatus: false
   }
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private accountService: AccountService, 
+    private toastr: ToastrService, private router:Router) { }
 
   setFilterParameters(filterParameters: FilterParameters){
     this.filterParameters = filterParameters;
@@ -44,7 +48,7 @@ export class StudentService {
     this.updateStudentInfo['updateStatus'] = false;
   };
 
-  customFilter(filterParameters: FilterParameters): Observable<FilterResponse> {
+  customFilter(filterParameters: FilterParameters):Observable<HttpResponse<FilterResponse<StudentFrom>>>{
     let params = new HttpParams();
     if(filterParameters.gender)
       params = params.append("gender", filterParameters.gender);
@@ -57,18 +61,17 @@ export class StudentService {
     if(filterParameters.pageNumber)
       params = params.append("pageNumber", filterParameters.pageNumber);
 
+    // var user = this.accountService.getCurrentUser();
+    // if(!user){
+    //   this.toastr.error("You are unauthorized");
+    //   this.router.navigateByUrl('/login');
+      
+    // }
+
+    // const header = new HttpHeaders().set('Authorization',`Bearer ${user?.token}`);
+
     const url = `${this.apiUrl}/filter`;
-    return this.http.get<FilterResponse>(url, { observe: 'response', params }).pipe(
-      map((response: HttpResponse<FilterResponse>) => {
-        if (response.body) {
-          return {
-            students: response.body.students,
-            totalPages: response.body.totalPages
-          };
-        }
-        return new FilterResponse();
-      })
-    );
+    return this.http.get<FilterResponse<StudentFrom>>(url, { observe: 'response', params});
   }
 
   create(studentData: any): Observable<any> {

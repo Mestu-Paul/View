@@ -1,6 +1,6 @@
 import { StudentFrom } from './StudentForm';
 
-export class FilterResponse {
-  students: StudentFrom[] = [];
+export class FilterResponse<T> {
+  members: T[] = [];
   totalPages: number = 0;
 }

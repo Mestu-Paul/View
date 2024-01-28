@@ -1,11 +1,28 @@
 /* Style for the header */
 .main-header {
-    background-color: #d00e78; /* Change color as needed */
-    color: #fff; /* Text color */
+    background-color: #d00e78;     
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-between;
     padding: 20px;
-    font-size: 30px;
-    font-weight: bold;
   }
+
+.menu{
+  display: flex;
+  width: 60%;
+  justify-content: space-between;
+}
+
+.menu .nav-item{
+  font-size: 20px;
+}
+
+.title{
+  font-size: 25px;
+  color: white;
+  font-weight: bold;
+}
+
+a{
+  text-decoration: none;
+  color: white;
+}

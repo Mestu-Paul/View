@@ -55,7 +55,7 @@ export class FormComponent implements OnInit{
 
   onCancel() {
     this.cancel.emit();
-    this.router.navigateByUrl('/');
+    this.router.navigateByUrl('/students');
     this.clearForm();
   }
 

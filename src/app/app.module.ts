@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './commonComponent/header/header.component';
@@ -13,6 +13,8 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 import { PartialUpdateComponent } from './studentComponent/partial-update/partial-update.component';
+import { LoginComponent } from './commonComponent/login/login.component';
+import { JwtInterceptor } from './_interceptors/jwt.interceptor';
 
 // const routes: Routes = [
 //   { path: './add-new-form', component: AddFormComponent },
@@ -25,7 +27,8 @@ import { PartialUpdateComponent } from './studentComponent/partial-update/partia
     FormComponent,
     TableComponent,
     PaginationComponent,
-    PartialUpdateComponent
+    PartialUpdateComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +45,7 @@ import { PartialUpdateComponent } from './studentComponent/partial-update/partia
     }),
   ],
   providers: [
-    provideClientHydration()
+    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true}
   ],
   bootstrap: [AppComponent]
 })
