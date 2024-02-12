@@ -15,6 +15,12 @@ import { CommonModule } from '@angular/common';
 import { PartialUpdateComponent } from './studentComponent/partial-update/partial-update.component';
 import { LoginComponent } from './commonComponent/login/login.component';
 import { JwtInterceptor } from './_interceptors/jwt.interceptor';
+import { DashboardComponent } from './admin/dashboard/dashboard.component';
+import { RegisterComponent } from './commonComponent/register/register.component';
+import { TeacherTableComponent } from './teacher/teacher-table/teacher-table.component';
+import { TeacherFormComponent } from './teacher/teacher-form/teacher-form.component';
+import { InboxComponent } from './messages/inbox/inbox.component';
+import { ChatComponent } from './messages/chat/chat.component';
 
 // const routes: Routes = [
 //   { path: './add-new-form', component: AddFormComponent },
@@ -28,7 +34,13 @@ import { JwtInterceptor } from './_interceptors/jwt.interceptor';
     TableComponent,
     PaginationComponent,
     PartialUpdateComponent,
-    LoginComponent
+    LoginComponent,
+    DashboardComponent,
+    RegisterComponent,
+    TeacherTableComponent,
+    TeacherFormComponent,
+    InboxComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,

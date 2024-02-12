@@ -1,0 +1,24 @@
+<div class="container-fluid">
+    <div *ngIf="!initiate" class="text-center mt-5">
+        Please select one
+    </div >
+    <div *ngIf="initiate">
+        <div class="title">
+            You're currently chatting with {{receiverUsername}}
+        </div>
+        <ul class="px-3" style="list-style: none;">
+            <li class="my-3"
+            [ngClass]="{'text-end': senderUsername===message.senderUsername}" 
+            *ngFor="let message of messages" >{{message.content}}</li>
+        </ul>
+        <form class="message-input" (submit)="sendMessage()">
+            <div class="d-flex">
+                <input type="text" class="form-control py-2 item" name="messageContent" [(ngModel)]="content">
+                <div>
+                    <button class="btn btn-warning item">Send</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>

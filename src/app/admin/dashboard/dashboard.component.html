@@ -1,0 +1,39 @@
+<div>
+    <div style="overflow-x: auto;">
+        <div class="text-end mt-3" style="width: 95%;" *ngIf="changeRole">
+            <button class="btn btn-warning" (click)="update()">Update</button>
+        </div>
+        <table class="student-table">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">#</th>
+                    <th style="text-align: center;">Username</th>
+                    <th style="text-align: center;">Role</th>
+                    <th style="text-align: center;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of users; let i=index">
+                    <td class="text-center">{{ i+1 }}</td>
+                    <td class="text-center">{{ user.username }}</td>
+                    <td class="text-center">
+                        <select name="role" [(ngModel)]="user.role" (change)="OnChange(user.username, user.role)">
+                            <option value="{{user.role}}">{{user.role | titlecase}}</option>
+                            <option *ngIf="user.role!=='admin'" value="admin">Admin</option>
+                            <option *ngIf="user.role!=='teacher'" value="teacher">Teacher</option>
+                            <option *ngIf="user.role!=='student'" value="student">Student</option>
+                        </select>
+                    </td>
+                    <td class="actions">
+                        <button class="btn btn-danger" type="button" >Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <app-pagination [numberOfPages]="totalPages" [pageNumber]="pageNumber" (updatePage)="loadUsers($event)"></app-pagination>
+
+    </div>
+</div>
+
+

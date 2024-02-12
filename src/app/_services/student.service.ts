@@ -7,6 +7,7 @@ import { StudentFrom } from '../_models/StudentForm';
 import { AccountService } from './account.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { UpdateStudent } from '../_models/udpateStudent';
 
 
 @Injectable({
@@ -61,15 +62,6 @@ export class StudentService {
     if(filterParameters.pageNumber)
       params = params.append("pageNumber", filterParameters.pageNumber);
 
-    // var user = this.accountService.getCurrentUser();
-    // if(!user){
-    //   this.toastr.error("You are unauthorized");
-    //   this.router.navigateByUrl('/login');
-      
-    // }
-
-    // const header = new HttpHeaders().set('Authorization',`Bearer ${user?.token}`);
-
     const url = `${this.apiUrl}/filter`;
     return this.http.get<FilterResponse<StudentFrom>>(url, { observe: 'response', params});
   }
@@ -82,8 +74,9 @@ export class StudentService {
     return this.http.delete(`${this.apiUrl}/delete/${studentId}`, { observe: 'response', responseType: 'text' });
   }
 
-  update(updatedData: StudentFrom): Observable<any> {
-    return this.http.put(`${this.apiUrl}/update/${updatedData.id}`, updatedData,{ observe: 'response', responseType: 'text' });
+  update(updatedData: UpdateStudent): Observable<any> {
+    const username = this.accountService.getCurrentUser()?.username;
+    return this.http.put(`${this.apiUrl}/update?username=${username}`, updatedData,{ observe: 'response', responseType: 'text' });
   }
 
   partialUpdate(id:string, updatedData: any){

@@ -1,4 +1,5 @@
 export class StudentFrom {
+    username: string = '';
     id: string = '';
     studentId: string ='';
     name: string ='';

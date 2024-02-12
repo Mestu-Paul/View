@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { FilterParameters } from '../../_models/FilterParameters';
 import { StudentFrom } from '../../_models/StudentForm';
 import { ToastrService } from 'ngx-toastr';
+import { AccountService } from '../../_services/account.service';
 
 @Component({
   selector: 'app-table',
@@ -23,13 +24,12 @@ export class TableComponent implements OnInit {
   // Array to hold studentComponent data fetched from API
   students: any[] = [];
 
-  // constructor with studentService to get data from service
+  
   constructor(private studentService: StudentService, private router:Router,
-            private toastr: ToastrService) {}
+            private toastr: ToastrService, public accountService:AccountService) {}
 
 
   ngOnInit(): void {
-    this.fetchStudentData(); // Call function to fetch studentComponent data
   }
 
   // ------------ pagination update ------------
@@ -84,7 +84,7 @@ export class TableComponent implements OnInit {
   readyFormToUpdate(student: any, operation: string){
     this.studentService.setFormFields(student);
     if(operation==='update')
-      this.router.navigateByUrl('/update');
+      this.router.navigateByUrl('students/update');
     else
       this.router.navigateByUrl('/partial-update');
   }

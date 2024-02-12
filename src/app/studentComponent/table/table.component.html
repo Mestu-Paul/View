@@ -1,9 +1,6 @@
 <div>
     <div style="display: flex; justify-content: space-between; width: 90%; margin: 20px auto;">
         <app-search (updateFilterParameter)="updateFilterParameter($event)"></app-search>
-        <div>
-            <button routerLink="/create" class="btn btn-info">Add New</button>
-        </div>
     </div>
     <div style="overflow-x: auto;">
         <table class="student-table">
@@ -35,9 +32,11 @@
                     <td>{{ student.bloodGroup }}</td>
                     <td>{{ student.lastDonatedAt }}</td>
                     <td class="actions">
-                        <button class="btn btn-warning me-2" (click)="readyFormToUpdate(student, 'update')">Update</button>
-                        <button class="btn btn-warning me-2" style="opacity: 0.7;" (click)="readyFormToUpdate(student, 'partial-update')">Patial Update</button>
-                        <button class="btn btn-danger" (click)="delete(student.id,student.name)">Delete</button>
+                        <div *ngIf="accountService.getCurrentUser()?.username===student.username || accountService.getCurrentUser()?.role==='admin'">
+                            <button class="btn btn-warning me-2" (click)="readyFormToUpdate(student, 'update')">Update</button>
+                            <button class="btn btn-warning me-2" style="opacity: 0.7;" (click)="readyFormToUpdate(student, 'partial-update')">Patial Update</button>
+                            <button class="btn btn-danger" (click)="delete(student.id,student.name)">Delete</button>
+                        </div>
                     </td>
                 </tr>
             </tbody>

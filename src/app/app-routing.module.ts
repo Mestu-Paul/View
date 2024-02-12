@@ -4,14 +4,22 @@ import { FormComponent } from './studentComponent/form/form.component';
 import { TableComponent } from './studentComponent/table/table.component';
 import { PartialUpdateComponent } from './studentComponent/partial-update/partial-update.component';
 import { LoginComponent } from './commonComponent/login/login.component';
-import { AppComponent } from './app.component';
+import { DashboardComponent } from './admin/dashboard/dashboard.component';
+import { RegisterComponent } from './commonComponent/register/register.component';
+import { TeacherTableComponent } from './teacher/teacher-table/teacher-table.component';
+import { TeacherFormComponent } from './teacher/teacher-form/teacher-form.component';
+import { InboxComponent } from './messages/inbox/inbox.component';
 
 const routes: Routes = [
   {path:'login', component:LoginComponent},
+  {path:'register', component:RegisterComponent},
   {path:'students',component:TableComponent},
-  {path:'create',component:FormComponent},
-  {path:'update',component:FormComponent},
+  {path:'students/update',component:FormComponent},
   {path:'partial-update',component:PartialUpdateComponent},
+  {path:'admin-dashboard',component:DashboardComponent},
+  {path:'teachers',component:TeacherTableComponent},
+  {path:'teachers/update',component:TeacherFormComponent},
+  {path:'messages/inbox',component:InboxComponent},
 ];
 
 @NgModule({

@@ -9,8 +9,7 @@
         <input type="{{passwordType}}" class="form-control my-1" name="Password" [(ngModel)]="model.password" autocomplete="new-password">
         <input type="checkbox" class="me-3" (click)="togglePassword()"> <label >Show password</label>
     </div>
-    <div class="d-flex justify-content-between mb-3">
-        <button class="btn btn-danger" type="button" (click)="logout()">Logout</button>
+    <div class="d-flex justify-content-center mb-3">
         <button class="btn btn-info " type="submit">Login</button>
     </div>
 </form>

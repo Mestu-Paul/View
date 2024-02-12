@@ -1,0 +1,58 @@
+
+<div class="data-form">
+    <div class="form-title">
+       Update your information
+    </div>
+   <form (ngSubmit)="onSubmit()" #myForm="ngForm">
+       
+       <div class="form-group mb-1">
+           <Label class="form-label">Name</Label>
+           <input class="form-control" type="text" placeholder="Name" [(ngModel)]="formFields.name" name="name">
+       </div>
+
+       <div class="form-group mb-1">
+           <Label class="form-label">Department</Label>
+           <input class="form-control" type="text" placeholder="Department e.g CSE" [(ngModel)]="formFields.department" name="department">
+       </div>
+       
+       <div class="form-group mb-1">
+           <Label class="form-label">Phone Number</Label>
+           <input class="form-control" type="text" placeholder="Phone e.g +880110000000" [(ngModel)]="formFields.phone" name="phone">
+       </div>
+
+       <div class="form-group mb-1" >
+           <Label  class="form-label">Gender</Label>
+           <select class="form-control" [(ngModel)]="formFields.gender" id="gender"  name="gender">
+               <option value="Male">Male</option>
+               <option value="Female">Female</option>
+           </select>
+       </div>
+       
+       <div class="form-group mb-1">
+           <Label class="form-label">Joined at</Label>
+           <input class="form-control" type="Date"  [(ngModel)]="formFields.joinedAt" name="joinedAt">
+       </div>
+       
+       <div class="form-group mb-1">
+           <Label class="form-label">Education</Label>
+           <textarea name="Education" rows="3" class="form-control" [(ngModel)]="formFields.education"></textarea>
+       </div>
+       
+       <div class="form-group mb-1">
+           <Label class="form-label">Research</Label>
+           <textarea name="Research" rows="3" class="form-control" [(ngModel)]="formFields.research"></textarea>
+       </div>
+       
+       
+       
+       <div class="form-footer">
+           <button class="btn btn-danger" type="button" (click)="onCancel()">Cancel</button>
+           <button class="btn btn-warning" type="submit">Update</button>
+       </div>
+   </form>
+</div>
+
+
+
+
+

@@ -1,0 +1,27 @@
+<form #loginForm="ngForm" (submit)="register()" class="container" autocomplete="off">
+    <h2 class="text-center">Register</h2>
+    <div class="form-group mb-3">
+        <label class="my-1">User role</label>
+        <select class="form-control my-1" name="userRole" id="" [(ngModel)]="user.role">
+            <option value="admin">Admin</option>
+            <option value="teacher">Teacher</option>
+            <option value="student">Student</option>
+        </select>
+    </div>
+    <div class="form-group mb-3">
+        <label class="my-1">Username</label>
+        <input type="text" class="form-control my-1" name="Username" [(ngModel)]="user.username" autocomplete="nope">
+    </div>
+    <div class="form-group mb-3">
+        <label class="my-1">Password</label>
+        <input type="{{passwordType}}" class="form-control my-1" name="Password" [(ngModel)]="user.password" autocomplete="new-password">
+    </div>
+    <div class="form-group mb-3">
+        <label class="my-1">Confirm Password</label>
+        <input type="{{passwordType}}" class="form-control my-1" name="confirmPassword" [(ngModel)]="confirmPassword" autocomplete="new-password">
+    </div>
+    <input type="checkbox" class="mb-3 me-3" (click)="togglePassword()"> <label >Show password</label>
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-info " type="submit">Register</button>
+    </div>
+</form>

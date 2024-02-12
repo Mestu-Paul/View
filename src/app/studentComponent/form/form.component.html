@@ -1,11 +1,11 @@
 
  <div class="data-form">
      <div class="form-title">
-        {{updateInfo["updateStatus"]?"Update":"Add New"}} Student's Information
+        Update your information
      </div>
     <form (ngSubmit)="onSubmit()" #myForm="ngForm">
         <!-- Your form fields go here -->
-        <div class="form-group mb-1" *ngIf="!updateInfo['updateStatus']">
+        <div class="form-group mb-1" >
             <Label class="form-label">Student's ID</Label>
             <input class="form-control" type="text"  placeholder="Students ID"  [(ngModel)]="formFields.studentId" name="student_id">
         </div>
@@ -30,7 +30,7 @@
             <input class="form-control" type="text" placeholder="Phone e.g +880110000000" [(ngModel)]="formFields.phone" name="phone">
         </div>
 
-        <div class="form-group mb-1" *ngIf="!updateInfo['updateStatus']">
+        <div class="form-group mb-1" >
             <Label  class="form-label">Gender</Label>
             <select class="form-control" [(ngModel)]="formFields.gender" id="gender"  name="gender">
                 <option value="Male">Male</option>
@@ -38,7 +38,7 @@
             </select>
         </div>
         
-        <div class="form-group mb-1" *ngIf="!updateInfo['updateStatus']">
+        <div class="form-group mb-1" >
             <Label  class="form-label">Blood Group</Label>
             <select class="form-control" [(ngModel)]="formFields.bloodGroup" id="blood_group" name="BloodGroup">
                 <option value="">Unknown</option>

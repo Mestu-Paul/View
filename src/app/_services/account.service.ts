@@ -1,31 +1,55 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, map } from 'rxjs';
-import { User } from '../_models/User';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
-import { FilterResponse } from '../_models/FilterResponse';
 import { Router } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
+import { User } from '../_models/User';
+
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class AccountService {
 
   baseUrl = "https://localhost:7250/api/Account/";
   private currentUserSource = new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSource.asObservable();
+  user: User = {} as User;
   
   constructor(private http: HttpClient, private router:Router, private toastr:ToastrService) { }
 
   login(model:any){
-    return this.http.post<User>(this.baseUrl+"login",model).subscribe({
+    return this.http.post<string>(this.baseUrl + "login", model, { responseType: 'text' as 'json' }).subscribe({
       next: response => {
-        this.setCurrentUser(response);
-        this.router.navigateByUrl('/');
+        this.decodeJwtToken(response);
         this.toastr.success("You are logged in");
       },
-      error: error => console.log(error)
+      error: error => {
+        console.log(error)
+        if(error.statusText=="Unknown Error"){
+          this.toastr.error("Can not connect with server");
+          return;
+        }
+        this.toastr.error(error.error);
+      }
     })
+  }
+
+  decodeJwtToken(token: string) {
+    try {
+      var decodedToken = JSON.parse(JSON.stringify(jwtDecode(token)));
+      console.log(decodedToken);
+      this.user.role = decodedToken['role'];
+      this.user.username = decodedToken['name'];
+      this.user.token = token;
+      this.setCurrentUser(this.user);
+      if(this.user.role==='admin')this.router.navigateByUrl('/admin-dashboard');
+      else this.router.navigateByUrl(`/${this.user.role}s`)
+    } catch (error) {
+      console.error('Error decoding JWT:', error);
+    }
   }
 
   register(model:any){
@@ -49,10 +73,13 @@ export class AccountService {
     this.router.navigateByUrl('/login');
   }
 
-  getUsers():Observable<User>{
-    const user = this.getCurrentUser()
-    const header = new HttpHeaders().set('Authorization', `Bearer ${user?.token}`);
-    return this.http.get<User>(this.baseUrl+'users',{headers:header});
+  getUsers(pageNumber: number = 1): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}users/filtered?pageNumber=${pageNumber}`);
+}
+
+  updateRole(updateData:any){
+    console.log("udpating ...");
+    return this.http.put(this.baseUrl+'updateRole',updateData);
   }
 
   isLoggedIn():boolean{

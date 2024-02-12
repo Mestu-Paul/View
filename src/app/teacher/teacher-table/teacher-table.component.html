@@ -1,0 +1,42 @@
+<div *ngIf="currentUser">
+    <div style="display: flex; justify-content: space-between; width: 90%; margin: 20px auto;">
+        <!-- <app-search (updateFilterParameter)="updateFilterParameter($event)"></app-search> -->
+    </div>
+    <div style="overflow-x: auto;">
+        <table class="student-table">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">#</th>
+                    <th style="text-align: center;">Name</th>
+                    <th style="text-align: center;">Department</th>
+                    <th style="text-align: center;">Gender</th>
+                    <th style="text-align: center;">Phone</th>
+                    <th style="text-align: center;">Education</th>
+                    <th style="text-align: center;">Research</th>
+                    <th style="text-align: center;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let teacher of teachers; let i=index">
+                    <td>{{ i+1 }}</td>
+                    <td>{{ teacher.name }}</td>
+                    <td>{{ teacher.department }}</td>
+                    <td>{{ teacher.gender }}</td>
+                    <td>{{ teacher.phone }}</td>
+                    <td>{{ teacher.education }}</td>
+                    <td>{{ teacher.research }}</td>
+                    <td class="actions">
+                        <div *ngIf="currentUser.username===teacher.username || currentUser.role==='admin'">
+                            <button class="btn btn-warning me-2" (click)="update(teacher)">Update</button>
+                            <button class="btn btn-danger" >Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <app-pagination [numberOfPages]="totalPage" [pageNumber]="filterParameters.pageNumber" (updatePage)="updatePageNumber($event)"></app-pagination>
+</div>
+
+
