@@ -3,6 +3,7 @@ import { AccountService } from '../../_services/account.service';
 import { ToastrService } from 'ngx-toastr';
 import { MessageService } from '../../_services/message.service';
 import { Message } from '../../_models/Message';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-chat',
@@ -11,13 +12,13 @@ import { Message } from '../../_models/Message';
 })
 export class ChatComponent implements OnInit{
   initiate:boolean = false;
-  receiverUsername:string='';
+  receiverUsername:string='peter';
   senderUsername:string="";
   content:string="";
 
   messages:Message[] = [];
 
-  constructor(private accountService:AccountService, private toastr:ToastrService, private messageService:MessageService){
+  constructor(private accountService:AccountService, private toastr:ToastrService, public messageService:MessageService){
     
   }
   ngOnInit(): void {
@@ -27,33 +28,36 @@ export class ChatComponent implements OnInit{
     }
     this.senderUsername = this.accountService.getCurrentUser()!.username;
 
-    this.messageService.messageRequestDetails.subscribe({
+    this.messageService.messageRequestDetails$.subscribe({
       next: details =>{
         console.log(details);
         this.receiverUsername = details.receiverName;
         this.senderUsername = details.senderName;
         if(this.receiverUsername && this.senderUsername){
-          this.loadMessages();
+          // this.loadMessages();
           this.initiate=true;
         }
       },
       error: error =>{
         console.log(error);
       }
-    })
+    });
+
+    this.updateMessages();
+    this.receivedMessage();
   }
 
-  loadMessages(){
-    this.messageService.getMessages(this.senderUsername,this.receiverUsername,1).subscribe({
-      next : res =>{
-        console.log(res);
-        this.messages = res;
-      },
-      error: error =>{
-        console.log(error);
-      }
-    })
-  }
+  // loadMessages(){
+  //   this.messageService.getMessages(this.senderUsername,this.receiverUsername,1).subscribe({
+  //     next : res =>{
+  //       console.log(res);
+  //       this.messages = res;
+  //     },
+  //     error: error =>{
+  //       console.log(error);
+  //     }
+  //   })
+  // }
 
   sendMessage(){
     const curMessage: Message ={
@@ -61,6 +65,7 @@ export class ChatComponent implements OnInit{
       recipientname: this.receiverUsername,
       content: this.content
     };
+
     this.messageService.sendMessage(curMessage).subscribe({
       next: res => {
         this.messages.push(curMessage);
@@ -70,6 +75,27 @@ export class ChatComponent implements OnInit{
       }
     })
     this.content='';
+  }
+
+  receivedMessage(){
+    this.messageService.onWSMessage((message:any)=>{
+      console.log(message);
+      const newMessage:Message = {
+        senderUsername: message.SenderUsername,
+        recipientname: message.Recipientname,
+        content: message.Content 
+      }
+      this.messages.push(newMessage);
+    });
+  }
+
+  updateMessages(){
+    this.messageService.messageThread$.subscribe({
+      next: messages =>{
+        this.messages = messages;
+        console.log("Updated messages:", this.messages);
+      }
+    })
   }
 
 }

@@ -20,29 +20,23 @@ export class InboxComponent implements OnInit{
 
   currentUser: User = {} as User;
   constructor(private accountService:AccountService, private router:Router,
-    private messageService:MessageService){
+    public messageService:MessageService){
 
   }
   ngOnInit(): void {
     if(this.accountService.getCurrentUser()){
       this.currentUser = this.accountService.getCurrentUser()!;
-      this.loadUsers();
     }
     else{
       this.router.navigateByUrl("login");
+      return;
     }
+
+    this.messageService.getChatList(this.currentUser.username);
   }
 
   loadUsers(){
-    this.messageService.getChatList(this.currentUser.username).subscribe({
-      next : res =>{
-        this.users = res.recipientUsername;
-        console.log(res);
-      },
-      error: error =>{
-        console.log(error);
-      }
-    })
+    this.messageService.getChatList(this.currentUser.username);
   }
 
   showChat(receiverName:string){

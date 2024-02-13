@@ -1,7 +1,7 @@
 <div class="container-fluid d-flex">
     <div class="inbox-message-list">
-        <ul>
-            <li class="py-2" [ngClass]="{'active-chat': currentRecipientUsername===user.username}" *ngFor="let user of users" (click)="showChat(user.username)">
+        <ul *ngIf="messageService.inboxThread$ | async as inboxThread">
+            <li class="py-2" [ngClass]="{'active-chat': currentRecipientUsername===user.username}" *ngFor="let user of inboxThread.recipientUsername" (click)="showChat(user.username)">
                 {{user.username}}
             </li>
         </ul>

@@ -1,8 +1,7 @@
 .container-fluid{
     position: relative;
     background-color: rgb(233, 232, 232);
-    min-height: 700px;
-    overflow-y: auto;
+    height: 85vh;
     padding: 0;
 }
 
