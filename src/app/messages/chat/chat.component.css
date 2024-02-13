@@ -1,20 +1,12 @@
-.container-fluid{
-    position: relative;
-    background-color: rgb(233, 232, 232);
-    height: 85vh;
-    padding: 0;
-}
 
-.title{
+ .title{
     text-align: center;
-    font-size: 22px;
-    background-color: white;
-    width: 100%;
-}
+    font-size: 20px;
+    background-color: gray;
+ }
 
-.message-input{
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-}
+ .chat ul {
+    list-style: none;
+    height: 720px;
+    overflow-y: auto;
+ }

@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<!-- <div class="container-fluid">
     <div *ngIf="!initiate" class="text-center mt-5">
         Please select one
     </div >
@@ -6,6 +6,7 @@
         <div class="title">
             You're currently chatting with {{receiverUsername}}
         </div>
+        
         <ul class="px-3" style="list-style: none; overflow-y: scroll; height: 80vh;">
             <li class="my-3" [ngClass]="{'text-end': senderUsername === message.senderUsername}" *ngFor="let message of messages">{{ message.content }}</li>
 
@@ -20,4 +21,26 @@
         </form>
 
     </div>
+</div> -->
+
+<div class="title py-3">
+    You're currently chatting with {{receiverUsername}}
+</div>
+
+<div *ngIf="!initiate" class="text-center my-5">
+    Please select one
+</div>
+<div *ngIf="initiate" class="chat">
+    <ul #scrollMe [scrollTop]="scrollMe.scrollHeight">
+        <li class="py-2 px-4" [ngClass]="{'text-end': senderUsername === message.senderUsername}" *ngFor="let message of messages">{{ message.content }}</li>
+    </ul>
+    <form class="message-input" (submit)="sendMessage()" class="input-group">
+        <input 
+        name="content" required 
+        [(ngModel)]="content"
+        type="text" class="form-control input-sm" placeholder="Send a private message">
+        <div class="input-group-append">
+            <button class="btn btn-warning" type="submit"> Send </button>
+        </div>
+    </form>
 </div>

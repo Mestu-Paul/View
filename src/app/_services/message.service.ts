@@ -5,6 +5,7 @@ import { Message } from '../_models/Message';
 import { ChatList } from '../_models/chatList';
 import {  WebSocketSubject } from 'rxjs/webSocket';
 import { AccountService } from './account.service';
+import { User } from '../_models/User';
 
 
 @Injectable({
@@ -32,19 +33,6 @@ export class MessageService {
       this.ws = new WebSocketSubject(this.wsUrl+`?token=${this.currentUser.username}`);
     else 
       this.ws = new WebSocketSubject(this.wsUrl);
-  }
-
-  async sendWSMessage(message: string) {
-    const msg : Message = {
-      senderUsername : "mestu",
-      recipientname: "peter",
-      content: message
-    };
-    try {
-      await this.ws.next(msg);
-    } catch (err) {
-      console.error('Error sending message:', err);
-    }
   }
 
   onWSMessage(callback:(message:any)=>void) {
@@ -121,5 +109,9 @@ export class MessageService {
         "content": message.content
       }
     return this.http.post(this.apiUrl,object);
+  }
+
+  searchUsers(username:string):Observable<User[]>{
+    return this.http.get<User[]>(`${this.apiUrl}/searchUsers?username=${username}`);
   }
 }

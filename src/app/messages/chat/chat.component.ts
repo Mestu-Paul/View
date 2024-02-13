@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MessageService } from '../../_services/message.service';
 import { Message } from '../../_models/Message';
 import { take } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-chat',
@@ -12,13 +13,14 @@ import { take } from 'rxjs';
 })
 export class ChatComponent implements OnInit{
   initiate:boolean = false;
-  receiverUsername:string='peter';
+  receiverUsername:string='';
   senderUsername:string="";
   content:string="";
 
   messages:Message[] = [];
 
-  constructor(private accountService:AccountService, private toastr:ToastrService, public messageService:MessageService){
+  constructor(private accountService:AccountService, private toastr:ToastrService, 
+    public messageService:MessageService, private route:ActivatedRoute){
     
   }
   ngOnInit(): void {
@@ -27,6 +29,7 @@ export class ChatComponent implements OnInit{
       return;
     }
     this.senderUsername = this.accountService.getCurrentUser()!.username;
+    console.log("sender name ",this.senderUsername);
 
     this.messageService.messageRequestDetails$.subscribe({
       next: details =>{
@@ -43,21 +46,23 @@ export class ChatComponent implements OnInit{
       }
     });
 
+    this.route.queryParams.subscribe(params => {
+      this.receiverUsername = params["recipientUsername"];
+      if(this.receiverUsername && this.accountService.getCurrentUser()){
+        this.senderUsername = this.accountService.getCurrentUser()!.username;
+        this.loadMessages();
+        this.initiate=true
+      }
+    })
+
     this.updateMessages();
     this.receivedMessage();
   }
 
-  // loadMessages(){
-  //   this.messageService.getMessages(this.senderUsername,this.receiverUsername,1).subscribe({
-  //     next : res =>{
-  //       console.log(res);
-  //       this.messages = res;
-  //     },
-  //     error: error =>{
-  //       console.log(error);
-  //     }
-  //   })
-  // }
+  loadMessages(){
+    // console.log("message loading ",this.senderUsername, this.receiverUsername);
+    this.messageService.getMessages(this.senderUsername,this.receiverUsername,1);
+  }
 
   sendMessage(){
     const curMessage: Message ={

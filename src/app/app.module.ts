@@ -21,6 +21,7 @@ import { TeacherTableComponent } from './teacher/teacher-table/teacher-table.com
 import { TeacherFormComponent } from './teacher/teacher-form/teacher-form.component';
 import { InboxComponent } from './messages/inbox/inbox.component';
 import { ChatComponent } from './messages/chat/chat.component';
+import { MessageComponent } from './messages/message/message.component';
 
 // const routes: Routes = [
 //   { path: './add-new-form', component: AddFormComponent },
@@ -40,7 +41,8 @@ import { ChatComponent } from './messages/chat/chat.component';
     TeacherTableComponent,
     TeacherFormComponent,
     InboxComponent,
-    ChatComponent
+    ChatComponent,
+    MessageComponent
   ],
   imports: [
     BrowserModule,

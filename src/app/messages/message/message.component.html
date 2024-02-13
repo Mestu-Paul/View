@@ -1,0 +1,21 @@
+<div class="d-flex justify-content-center">
+    <div>
+        <button class="btn btn-info m-2" [routerLink]="'/messages/inbox'">Inbox</button>
+    </div>
+    <div class="input-group mt-3">
+        <input type="text" name="username" class="" [(ngModel)]="username">
+        <div class="input-group-append">
+            <button class="btn btn-warning" (click)="searchUser()">Search</button>
+        </div>
+    </div>
+</div>
+
+<div class="search-users">
+    <div class="row d-flex">
+        <div class="card col-2 text-center m-4" *ngFor="let user of users">
+            <div class="card-body">
+              <h5 style="cursor: pointer;" (click)="gotoInbox(user.username)" class="card-title">Click to chat with {{user.username}}</h5>
+            </div>
+        </div>
+    </div>
+</div>

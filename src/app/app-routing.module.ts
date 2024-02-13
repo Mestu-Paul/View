@@ -9,6 +9,8 @@ import { RegisterComponent } from './commonComponent/register/register.component
 import { TeacherTableComponent } from './teacher/teacher-table/teacher-table.component';
 import { TeacherFormComponent } from './teacher/teacher-form/teacher-form.component';
 import { InboxComponent } from './messages/inbox/inbox.component';
+import { MessageComponent } from './messages/message/message.component';
+import { ChatComponent } from './messages/chat/chat.component';
 
 const routes: Routes = [
   {path:'login', component:LoginComponent},
@@ -19,7 +21,9 @@ const routes: Routes = [
   {path:'admin-dashboard',component:DashboardComponent},
   {path:'teachers',component:TeacherTableComponent},
   {path:'teachers/update',component:TeacherFormComponent},
+  {path:'messages',component:MessageComponent},
   {path:'messages/inbox',component:InboxComponent},
+  {path:'messages/inbox/chat',component:ChatComponent},
 ];
 
 @NgModule({

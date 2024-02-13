@@ -3,7 +3,7 @@ import { AccountService } from '../../_services/account.service';
 import { StudentService } from '../../_services/student.service';
 import { TeacherService } from '../../_services/teacher.service';
 import { User } from '../../_models/User';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TeacherFilterParameters } from '../../_models/TeacherFilterParameters';
 import { MessageService } from '../../_services/message.service';
 import { Recipient } from '../../_models/chatList';
@@ -17,6 +17,8 @@ export class InboxComponent implements OnInit{
   users : Recipient[] = [];
 
   currentRecipientUsername: string = '';
+
+  newRecipient:string='';
 
   currentUser: User = {} as User;
   constructor(private accountService:AccountService, private router:Router,
