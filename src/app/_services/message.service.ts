@@ -35,45 +35,62 @@ export class MessageService {
       this.ws = new WebSocketSubject(this.wsUrl);
   }
 
-  onWSMessage(callback:(message:any)=>void) {
+
+  onWSMessage(callback:(message:Message)=>void) {
 
     this.ws.subscribe({
       // retrieve message
-      next: (message) =>{
-        console.log("upcomming message ", message);
+      next: (message:Message) =>{
         callback(message);
 
-        // update chat list
-        this.inboxThread$.pipe(take(1)).subscribe({
-          next: list => {
-            const existingRecipientIndex = list.recipientUsername.findIndex(recipient => recipient.username === message.recipientname);
-            if(existingRecipientIndex!==-1){
-              list.recipientUsername[existingRecipientIndex].timestamp = new Date().toISOString();
-            }
-            else{
-              list.recipientUsername.push({ username:message.recipientname, timestamp: new Date().toISOString() });
-            }
-            this.inboxThreadSource.next(list);
-          }
-        })
-      },
-
-      error: error =>{
-        console.log("error getting message from WS ",error);
+        this.updateChatList(message);
+        
       }
     });
   }
 
+  updateChatList(message:Message){
+    this.inboxThread$.pipe(take(1)).subscribe({
+      next: list => {
+        if(list===null){
+          list = new ChatList();
+          list.username = this.currentUser.username;
+        }
+        const recipientUsername = (message.senderUsername===this.currentUser.username?
+          message.recipientUsername:message.senderUsername);
+
+        message.messageSent = (message.messageSent?message.messageSent: new Date().toISOString());
+
+        const existingRecipientIndex = list?.recipientUsername.findIndex(recipient => recipient.username === recipientUsername); 
+
+        // update chate list
+        if(existingRecipientIndex!==-1 && list){
+          list.recipientUsername[existingRecipientIndex].timestamp = message.messageSent;
+        }
+        else{
+          list.recipientUsername.push({ username:recipientUsername, timestamp: message.messageSent });
+        }
+
+        // sort chat list
+        list.recipientUsername.sort((a,b) => {
+          return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+        });
+
+        // atach updated chatList
+        this.inboxThreadSource.next(list);
+      }
+    })
+  }
 
   // for chat box
-  private messageRequestDetailsSource: BehaviorSubject<any> = new BehaviorSubject<any>({
+  private currentChatDetailsSource: BehaviorSubject<any> = new BehaviorSubject<any>({
     senderName: '',
     receiverName: ''
   });
-  public messageRequestDetails$ = this.messageRequestDetailsSource.asObservable();
+  public currentChatDetails$ = this.currentChatDetailsSource.asObservable();
 
   setMessageRequestDetails(details:any){
-    this.messageRequestDetailsSource.next(details);
+    this.currentChatDetailsSource.next(details);
     this.getMessages(details.senderName,details.receiverName);
   }
 
@@ -81,6 +98,10 @@ export class MessageService {
   getChatList(username:string){
     this.http.get<ChatList>(`${this.apiUrl}/chatlist?username=${username}`).subscribe({
       next: res => {
+        // sort chat list
+        res.recipientUsername.sort((a,b) => {
+          return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+        });
         this.inboxThreadSource.next(res);
       },
       error: error => {
@@ -90,7 +111,6 @@ export class MessageService {
   }
 
   getMessages(sender:string, receiver:string, pageNumber:number=1){
-    console.log("Getting message");
     this.http.get<Message[]>(`${this.apiUrl}?senderUsername=${sender}&receiverUsername=${receiver}&pagenumber=${pageNumber}`).subscribe({
       next: messages => {
         this.messageThreadSource.next(messages);
@@ -101,14 +121,30 @@ export class MessageService {
     })
   }
 
-  sendMessage(message:Message){
-    const object = 
-      {
-        "senderUsername": message.senderUsername,
-        "recipientname": message.recipientname,
-        "content": message.content
+  getMoreMessageWithScrolling(sender:string, receiver:string, pageNumber:number){
+    this.http.get<Message[]>(`${this.apiUrl}?senderUsername=${sender}&receiverUsername=${receiver}&pagenumber=${pageNumber}`).subscribe({
+      next: messages => {
+        this.messageThread$.pipe(take(1)).subscribe({
+          next: threadMessages => {
+            if(threadMessages){
+              // console.log("after scroll ",[...threadMessages,...messages]);
+              this.messageThreadSource.next([...messages,...threadMessages]);
+            }
+            else{
+              this.messageThreadSource.next(messages);
+            }
+          }
+        })
+      },
+      error: error =>{
+        console.log(error);
       }
-    return this.http.post(this.apiUrl,object);
+    })
+  }
+
+  sendMessage(message:Message){
+    this.updateChatList(message);
+    return this.http.post(this.apiUrl,message);
   }
 
   searchUsers(username:string):Observable<User[]>{

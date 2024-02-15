@@ -1,12 +1,13 @@
 
- .title{
-    text-align: center;
-    font-size: 20px;
-    background-color: gray;
- }
 
  .chat ul {
     list-style: none;
     height: 720px;
     overflow-y: auto;
  }
+
+ /* .user-message{
+   border: 1px solid rgb(177, 177, 177);
+   width: fit-content;
+   margin-top: 5px;
+ } */

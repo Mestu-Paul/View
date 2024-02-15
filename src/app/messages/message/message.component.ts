@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { User } from '../../_models/User';
 import { MessageService } from '../../_services/message.service';
 import { Router } from '@angular/router';
+import { AccountService } from '../../_services/account.service';
 
 @Component({
   selector: 'app-message',
@@ -12,10 +13,12 @@ export class MessageComponent implements OnInit{
   users:User[]=[];
   username:string='';
   content:string='';
+  currentUser:User = {} as User;
 
-  constructor(private messageService:MessageService, private router:Router){}
+  constructor(private messageService:MessageService, private router:Router, private accountService: AccountService){}
 
   ngOnInit(): void {
+    this.currentUser = this.accountService.getCurrentUser()!;
     this.searchUser();  
   }
 
@@ -31,7 +34,7 @@ export class MessageComponent implements OnInit{
   }
 
   gotoInbox(recipientUsername:string){
-    this.router.navigate(['/messages/inbox/chat'], { queryParams: { "recipientUsername": recipientUsername } });
+    this.router.navigate(['/messages/inbox'], { queryParams: { "recipientUsername": recipientUsername } });
   }
 
 }

@@ -12,10 +12,12 @@
 
 <div class="search-users">
     <div class="row d-flex">
-        <div class="card col-2 text-center m-4" *ngFor="let user of users">
-            <div class="card-body">
-              <h5 style="cursor: pointer;" (click)="gotoInbox(user.username)" class="card-title">Click to chat with {{user.username}}</h5>
+        <ng-container *ngFor="let user of users">
+            <div class="card col-2 text-center m-4"  *ngIf="user.username !== currentUser.username">
+                <div class="card-body" >
+                  <h5 style="cursor: pointer;" (click)="gotoInbox(user.username)" class="card-title">Click to chat with {{user.username}}</h5>
+                </div>
             </div>
-        </div>
+        </ng-container>
     </div>
 </div>

@@ -1,21 +1,29 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { AccountService } from '../../_services/account.service';
 import { ToastrService } from 'ngx-toastr';
 import { MessageService } from '../../_services/message.service';
 import { Message } from '../../_models/Message';
 import { take } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
 })
-export class ChatComponent implements OnInit{
+export class ChatComponent implements OnInit, AfterViewChecked{
+
+  @ViewChild("messageForm") messageForm?: NgForm;
+
+  @ViewChild('scrollChatBox', {static: false}) scrollChatBox?: ElementRef;
+  scrollContainer:any;
+
   initiate:boolean = false;
-  receiverUsername:string='';
+  recipientUsername:string='';
   senderUsername:string="";
   content:string="";
+  pageNumber:number=1;
 
   messages:Message[] = [];
 
@@ -28,46 +36,67 @@ export class ChatComponent implements OnInit{
       this.toastr.error("You are not permitted");
       return;
     }
-    this.senderUsername = this.accountService.getCurrentUser()!.username;
-    console.log("sender name ",this.senderUsername);
 
-    this.messageService.messageRequestDetails$.subscribe({
+    this.senderUsername = this.accountService.getCurrentUser()!.username;
+
+    this.setCurrentChatDetails();
+    this.receiveMessage();
+  }
+
+  ngAfterViewChecked(): void {
+    this.scrollContainer = this.scrollChatBox?.nativeElement;
+  }
+
+  private onChangeChatList(){
+    if(this.isScrollerNearToBottom())this.scrollToBottom();
+  }
+
+  private isScrollerNearToTop(){
+  }
+
+  private scrollToTop(){
+    this.scrollContainer.scroll({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
+  }
+
+  private isScrollerNearToBottom(){
+    const threshold = 150;
+    const position = this.scrollContainer.scrollTop + this.scrollContainer.offsetHeight;
+    const height = this.scrollContainer.scrollHeight;
+    return position > height - threshold;
+  }
+
+  private scrollToBottom(){
+    this.scrollContainer.scroll({
+      top: this.scrollContainer.scrollHeight,
+      left: 0,
+      behavior: 'smooth'
+    });
+  }
+
+  setCurrentChatDetails(){
+    this.messageService.currentChatDetails$.subscribe({
       next: details =>{
-        console.log(details);
-        this.receiverUsername = details.receiverName;
+        this.recipientUsername = details.receiverName;
         this.senderUsername = details.senderName;
-        if(this.receiverUsername && this.senderUsername){
-          // this.loadMessages();
+        if(this.recipientUsername && this.senderUsername){
           this.initiate=true;
         }
       },
       error: error =>{
         console.log(error);
+        this.initiate=false;
       }
     });
-
-    this.route.queryParams.subscribe(params => {
-      this.receiverUsername = params["recipientUsername"];
-      if(this.receiverUsername && this.accountService.getCurrentUser()){
-        this.senderUsername = this.accountService.getCurrentUser()!.username;
-        this.loadMessages();
-        this.initiate=true
-      }
-    })
-
-    this.updateMessages();
-    this.receivedMessage();
-  }
-
-  loadMessages(){
-    // console.log("message loading ",this.senderUsername, this.receiverUsername);
-    this.messageService.getMessages(this.senderUsername,this.receiverUsername,1);
   }
 
   sendMessage(){
     const curMessage: Message ={
       senderUsername: this.senderUsername,
-      recipientname: this.receiverUsername,
+      recipientUsername: this.recipientUsername,
       content: this.content
     };
 
@@ -80,29 +109,33 @@ export class ChatComponent implements OnInit{
       }
     })
     this.content='';
+    this.scrollToBottom();
   }
 
-  receivedMessage(){
-    this.messageService.onWSMessage((message:any)=>{
-      console.log(message);
-      const newMessage:Message = {
-        senderUsername: message.SenderUsername,
-        recipientname: message.Recipientname,
-        content: message.Content 
-      }
-      this.messages.push(newMessage);
-    });
-  }
-
-  updateMessages(){
+  receiveMessage(){
     this.messageService.messageThread$.subscribe({
       next: messages =>{
         this.messages = messages;
-        console.log("Updated messages:", this.messages);
       }
-    })
+    });
+
+    this.messageService.onWSMessage((message:Message)=>{
+      if(message.senderUsername === this.recipientUsername){
+        this.messages.push(message);
+      }
+      else{
+        this.toastr.success(`${message.senderUsername} just sent you a message`)
+      }
+    });
+
+    this.onChangeChatList();
   }
 
+  getMoreMessage(){
+    this.pageNumber++;
+    this.messageService.getMoreMessageWithScrolling(this.senderUsername,this.recipientUsername,this.pageNumber);
+    this.scrollToTop();
+  }
 }
 
 
