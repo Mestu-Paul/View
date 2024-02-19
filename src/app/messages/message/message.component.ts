@@ -3,6 +3,7 @@ import { User } from '../../_models/User';
 import { MessageService } from '../../_services/message.service';
 import { Router } from '@angular/router';
 import { AccountService } from '../../_services/account.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-message',
@@ -15,9 +16,14 @@ export class MessageComponent implements OnInit{
   content:string='';
   currentUser:User = {} as User;
 
-  constructor(private messageService:MessageService, private router:Router, private accountService: AccountService){}
+  constructor(private messageService:MessageService, private router:Router, private accountService: AccountService, private toastr:ToastrService){}
 
   ngOnInit(): void {
+    if(this.accountService.getCurrentUser()===null){
+      this.toastr.error("You are not permitted");
+      this.router.navigateByUrl("/");
+      return;
+    }
     this.currentUser = this.accountService.getCurrentUser()!;
     this.searchUser();  
   }

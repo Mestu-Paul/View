@@ -5,6 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { User } from '../_models/User';
+import { AuthToken } from '../_models/AuthToken';
+import { UserRecords } from '../_models/UserRecords';
 
 
 @Injectable({
@@ -21,9 +23,9 @@ export class AccountService {
   constructor(private http: HttpClient, private router:Router, private toastr:ToastrService) { }
 
   login(model:any){
-    return this.http.post<string>(this.baseUrl + "login", model, { responseType: 'text' as 'json' }).subscribe({
+    return this.http.post<AuthToken>(this.baseUrl + "login", model).subscribe({
       next: response => {
-        this.decodeJwtToken(response);
+        this.decodeJwtToken(response.accessToken);
         this.toastr.success("You are logged in");
       },
       error: error => {
@@ -40,7 +42,7 @@ export class AccountService {
   decodeJwtToken(token: string) {
     try {
       var decodedToken = JSON.parse(JSON.stringify(jwtDecode(token)));
-      console.log(decodedToken);
+      
       this.user.role = decodedToken['role'];
       this.user.username = decodedToken['name'];
       this.user.token = token;
@@ -78,8 +80,11 @@ export class AccountService {
 }
 
   updateRole(updateData:any){
-    console.log("udpating ...");
     return this.http.put(this.baseUrl+'updateRole',updateData);
+  }
+
+  deleteUser(username:string){
+    return this.http.delete(`${this.baseUrl}delete/${username}`);
   }
 
   isLoggedIn():boolean{
@@ -87,5 +92,9 @@ export class AccountService {
       return true;
     }
     return false;
+  }
+
+  getUserRecords(){
+    return this.http.get<UserRecords>(this.baseUrl+"userRecords");
   }
 }

@@ -5,4 +5,5 @@ export class Message{
     content:string='';
     dateRead?:string='';
     messageSent?:string='';
+    showSeenDate?:boolean=false;
 }

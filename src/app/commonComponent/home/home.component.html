@@ -1,0 +1,26 @@
+<div class="container-fluid text-center">
+    <h2 class="my-3">Basic Student CRUD Application</h2>
+    <p *ngIf="accountService.getCurrentUser()===null">Here user can <button class="btn text-primary" routerLink="/register">Register</button> and 
+        <button class="btn text-primary" routerLink="/login">Login</button></p>
+    <p>
+        User can access resources according to their role
+    </p>
+</div>
+
+<div class="container d-flex justify-content-center mt-5" >
+    <div class="card col-2 text-center m-4" >
+        <div class="card-body">
+            <h5 style="cursor: pointer;" class="card-title text-info">Total registered users <br><strong>{{userRecords.users}}</strong> </h5>
+        </div>
+    </div>
+    <div class="card col-2 text-center m-4" >
+        <div class="card-body">
+            <h5 style="cursor: pointer;" class="card-title text-info">Number of teachers <br><strong>{{userRecords.teachers}}</strong></h5>
+        </div>
+    </div>
+    <div class="card col-2 text-center m-4" >
+        <div class="card-body">
+            <h5 style="cursor: pointer;" class="card-title text-info">Number of students <br><strong>{{userRecords.students}}</strong></h5>
+        </div>
+    </div>
+</div>

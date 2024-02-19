@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { AccountService } from '../../_services/account.service';
 import { ToastrService } from 'ngx-toastr';
 import { MessageService } from '../../_services/message.service';
@@ -6,33 +6,37 @@ import { Message } from '../../_models/Message';
 import { take } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
-  styleUrl: './chat.component.css'
+  styleUrl: './chat.component.css',
+  providers: [DatePipe]
 })
-export class ChatComponent implements OnInit, AfterViewChecked{
+export class ChatComponent implements OnInit, AfterViewChecked {
 
   @ViewChild("messageForm") messageForm?: NgForm;
 
-  @ViewChild('scrollChatBox', {static: false}) scrollChatBox?: ElementRef;
-  scrollContainer:any;
+  @ViewChild('scrollChatBox', { static: false }) scrollChatBox?: ElementRef;
+  scrollContainer: any;
 
-  initiate:boolean = false;
-  recipientUsername:string='';
-  senderUsername:string="";
-  content:string="";
-  pageNumber:number=1;
+  initiate: boolean = false;
+  recipientUsername: string = '';
+  senderUsername: string = "";
+  content: string = "";
+  pageNumber: number = 1;
+  justLoad:boolean = true;
 
-  messages:Message[] = [];
+  messages: Message[] = [];
 
-  constructor(private accountService:AccountService, private toastr:ToastrService, 
-    public messageService:MessageService, private route:ActivatedRoute){
-    
+  constructor(private accountService: AccountService, private toastr: ToastrService,
+    public messageService: MessageService, private route: ActivatedRoute, public datePipe: DatePipe) {
+
   }
+
   ngOnInit(): void {
-    if(this.accountService.getCurrentUser()===null){
+    if (this.accountService.getCurrentUser() === null) {
       this.toastr.error("You are not permitted");
       return;
     }
@@ -44,17 +48,18 @@ export class ChatComponent implements OnInit, AfterViewChecked{
   }
 
   ngAfterViewChecked(): void {
-    this.scrollContainer = this.scrollChatBox?.nativeElement;
+    if(this.initiate && this.justLoad && this.messages.length>0){
+      this.scrollContainer = this.scrollChatBox?.nativeElement;
+      this.scrollToBottom();
+      this.justLoad = false;
+    }
   }
 
-  private onChangeChatList(){
-    if(this.isScrollerNearToBottom())this.scrollToBottom();
+
+  private isScrollerNearToTop() {
   }
 
-  private isScrollerNearToTop(){
-  }
-
-  private scrollToTop(){
+  private scrollToTop() {
     this.scrollContainer.scroll({
       top: 0,
       left: 0,
@@ -62,14 +67,15 @@ export class ChatComponent implements OnInit, AfterViewChecked{
     });
   }
 
-  private isScrollerNearToBottom(){
+  private isScrollerNearToBottom() {
     const threshold = 150;
     const position = this.scrollContainer.scrollTop + this.scrollContainer.offsetHeight;
     const height = this.scrollContainer.scrollHeight;
     return position > height - threshold;
   }
 
-  private scrollToBottom(){
+  public scrollToBottom() {
+    console.log("scroll to bottom");
     this.scrollContainer.scroll({
       top: this.scrollContainer.scrollHeight,
       left: 0,
@@ -77,24 +83,24 @@ export class ChatComponent implements OnInit, AfterViewChecked{
     });
   }
 
-  setCurrentChatDetails(){
+  setCurrentChatDetails() {
     this.messageService.currentChatDetails$.subscribe({
-      next: details =>{
+      next: details => {
         this.recipientUsername = details.receiverName;
         this.senderUsername = details.senderName;
-        if(this.recipientUsername && this.senderUsername){
-          this.initiate=true;
+        if (this.recipientUsername && this.senderUsername) {
+          this.initiate = true;
         }
       },
-      error: error =>{
+      error: error => {
         console.log(error);
-        this.initiate=false;
+        this.initiate = false;
       }
     });
   }
 
-  sendMessage(){
-    const curMessage: Message ={
+  sendMessage() {
+    const curMessage: Message = {
       senderUsername: this.senderUsername,
       recipientUsername: this.recipientUsername,
       content: this.content
@@ -104,36 +110,36 @@ export class ChatComponent implements OnInit, AfterViewChecked{
       next: res => {
         this.messages.push(curMessage);
       },
-      error: error =>{
+      error: error => {
         console.log(error);
       }
     })
-    this.content='';
+    this.content = '';
     this.scrollToBottom();
   }
 
-  receiveMessage(){
+  receiveMessage() {
     this.messageService.messageThread$.subscribe({
-      next: messages =>{
+      next: messages => {
         this.messages = messages;
       }
     });
 
-    this.messageService.onWSMessage((message:Message)=>{
-      if(message.senderUsername === this.recipientUsername){
+    
+
+    this.messageService.onWSMessage((message: Message) => {
+      if (message.senderUsername === this.recipientUsername) {
         this.messages.push(message);
       }
-      else{
+      else {
         this.toastr.success(`${message.senderUsername} just sent you a message`)
       }
     });
-
-    this.onChangeChatList();
   }
 
-  getMoreMessage(){
+  getMoreMessage() {
     this.pageNumber++;
-    this.messageService.getMoreMessageWithScrolling(this.senderUsername,this.recipientUsername,this.pageNumber);
+    this.messageService.getMoreMessageWithScrolling(this.senderUsername, this.recipientUsername, this.pageNumber);
     this.scrollToTop();
   }
 }

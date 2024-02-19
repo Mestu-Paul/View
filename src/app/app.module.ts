@@ -11,7 +11,7 @@ import { FormComponent } from './studentComponent/form/form.component';
 import { PaginationComponent } from './commonComponent/pagination/pagination.component';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { PartialUpdateComponent } from './studentComponent/partial-update/partial-update.component';
 import { LoginComponent } from './commonComponent/login/login.component';
 import { JwtInterceptor } from './_interceptors/jwt.interceptor';
@@ -22,6 +22,9 @@ import { TeacherFormComponent } from './teacher/teacher-form/teacher-form.compon
 import { InboxComponent } from './messages/inbox/inbox.component';
 import { ChatComponent } from './messages/chat/chat.component';
 import { MessageComponent } from './messages/message/message.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { HomeComponent } from './commonComponent/home/home.component';
 
 // const routes: Routes = [
 //   { path: './add-new-form', component: AddFormComponent },
@@ -42,7 +45,8 @@ import { MessageComponent } from './messages/message/message.component';
     TeacherFormComponent,
     InboxComponent,
     ChatComponent,
-    MessageComponent
+    MessageComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -57,6 +61,8 @@ import { MessageComponent } from './messages/message/message.component';
       progressBar: true,
       progressAnimation: 'increasing',
     }),
+    InfiniteScrollModule,
+    FontAwesomeModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true}

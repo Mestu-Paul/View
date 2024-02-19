@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
 import { AccountService } from '../../_services/account.service';
+import { User } from '../../_models/User';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
+import { MessageService } from '../../_services/message.service';
 
 @Component({
   selector: 'app-header',
@@ -7,9 +11,25 @@ import { AccountService } from '../../_services/account.service';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
-  constructor(public accountService:AccountService){}
+  loggedIn=false;
+  unreadMessageCount=0;
+  constructor(public accountService:AccountService, private toastr:ToastrService,
+    private router:Router, private messageService:MessageService){
+    this.loggedIn = this.accountService.getCurrentUser()?true:false;
+
+    this.updateUnreadMessageCount();
+  }
 
   logout(){
     this.accountService.logOut();
   }
+
+  updateUnreadMessageCount(){
+    this.messageService.unreadMessageCountThread.subscribe({
+      next: res => this.unreadMessageCount = res,
+      error: err => console.log(err)
+    })
+  }
+
+
 }

@@ -3,11 +3,28 @@
 </div>
 <div *ngIf="initiate" class="chat">
     <div class="text-center">
-        <button class="btn btn-info" (click)="getMoreMessage()">More</button>
+        <button class="btn mt-1" (click)="getMoreMessage()">More</button>
     </div>
-    <ul #scrollChatBox>
-        <li  class="py-2 px-4 user-message" [ngClass]="{'text-end': senderUsername === message.senderUsername}" *ngFor="let message of messages">{{ message.content }}</li>
+    <ul #scrollChatBox class="pb-5">
+      <ng-container  *ngFor="let message of messages">
+        <ng-container *ngIf="senderUsername === message.senderUsername">
+            <div class="me-5 d-flex justify-content-end" (click)="message.showSeenDate=true">
+                <li title="Seen at {{datePipe.transform(message.dateRead,'medium')}}" class="py-2 px-4 my-1 sender-talkbubble" style="width: fit-content; max-width: 70%;">
+                    {{ message.content }}
+                </li>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="senderUsername !== message.senderUsername">
+            <div class="ms-5  d-flex justify-content-start">
+                <li  class="py-2 px-4 my-1 recipient-talkbubble" style="width: fit-content; max-width: 70%;">
+                    {{ message.content }}
+                </li>
+            </div>
+        </ng-container>
+      </ng-container>
+
     </ul> 
+
     <form #messageForm="ngForm" class="message-input" (submit)="sendMessage()" class="input-group mx-auto" style="width: 60%;">
         <input 
         name="content" required 

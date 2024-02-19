@@ -14,7 +14,7 @@ import { ChatList, Recipient } from '../../_models/chatList';
   styleUrl: './inbox.component.css'
 })
 export class InboxComponent implements OnInit{
-  chatList : any= new ChatList;
+  chatList : ChatList = new ChatList;
 
   currentRecipientUsername: string = '';
 
@@ -30,7 +30,7 @@ export class InboxComponent implements OnInit{
       this.currentUser = this.accountService.getCurrentUser()!;
     }
     else{
-      this.router.navigateByUrl("login");
+      this.router.navigateByUrl("/");
       return;
     }
     
@@ -40,10 +40,16 @@ export class InboxComponent implements OnInit{
 
   extractQueryParams(){
     this.route.queryParams.subscribe(params => {
-      this.newRecipientUsername = params["recipientUsername"];
-      if(this.newRecipientUsername){
-        this.currentRecipientUsername = this.newRecipientUsername;
-        this.showChat(this.currentRecipientUsername);
+      const index = this.chatList.recipientUsername.findIndex(recipient => recipient.username === params["recipientUsername"]);
+      if(index===-1){
+        this.newRecipientUsername = params["recipientUsername"];
+        if(this.newRecipientUsername){
+          this.currentRecipientUsername = this.newRecipientUsername;
+          this.showChat(this.currentRecipientUsername);
+        }
+      }
+      else{
+        this.showChat(params["recipientUsername"]);
       }
     })
   }
@@ -58,6 +64,10 @@ export class InboxComponent implements OnInit{
         console.log("error while updating list ",error);
       }
     })
+  }
+
+  navigateToChat(recipientUsername:string){
+    this.router.navigate(['/messages/inbox'], { queryParams: { recipientUsername: recipientUsername } });
   }
 
   showChat(receiverName:string){

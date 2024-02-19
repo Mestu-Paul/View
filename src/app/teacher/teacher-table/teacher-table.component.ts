@@ -27,12 +27,12 @@ export class TeacherTableComponent implements OnInit {
     this.currentUser  = this.accountService.getCurrentUser();
     if(this.currentUser===null){
       this.toastr.error("You are not permitted");
-      this.router.navigateByUrl("login");
+      this.router.navigateByUrl("/");
       return;
     }
     if(this.currentUser.role==='student'){
       this.toastr.error("You are not permitted");
-      this.router.navigateByUrl("students");
+      this.router.navigateByUrl("/");
     }
 
     this.loadTeachers();

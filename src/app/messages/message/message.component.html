@@ -1,11 +1,16 @@
-<div class="d-flex justify-content-center">
+<div class="d-flex justify-content-start mt-3 mx-5">
     <div>
-        <button class="btn btn-info m-2" [routerLink]="'/messages/inbox'">Inbox</button>
+        <button class="btn btn-warning" [routerLink]="'/messages/inbox'">Inbox</button>
     </div>
-    <div class="input-group mt-3">
-        <input type="text" name="username" class="" [(ngModel)]="username">
-        <div class="input-group-append">
-            <button class="btn btn-warning" (click)="searchUser()">Search</button>
+
+    <div class="xt-blog-form ms-5">
+        <div class="input-group add-on">
+          <input class="form-control" placeholder="Type here" name="username" [(ngModel)]="username" name="srch-term" id="srch-term" type="text">
+          <div class="input-group-btn">
+            <button class="btn btn-primary" type="button" (click)="searchUser()"  style="border-radius: 0px var(--bs-border-radius) var(--bs-border-radius) 0px;">
+                <i class="fas fa-search text-light"></i>
+            </button>
+          </div>
         </div>
     </div>
 </div>
@@ -13,9 +18,10 @@
 <div class="search-users">
     <div class="row d-flex">
         <ng-container *ngFor="let user of users">
-            <div class="card col-2 text-center m-4"  *ngIf="user.username !== currentUser.username">
-                <div class="card-body" >
-                  <h5 style="cursor: pointer;" (click)="gotoInbox(user.username)" class="card-title">Click to chat with {{user.username}}</h5>
+            <div class="card col-2 text-center m-4" *ngIf="user.username !== currentUser.username">
+                <div class="card-body">
+                    <h5 style="cursor: pointer;" (click)="gotoInbox(user.username)" class="card-title">Click to chat
+                        with {{user.username}}</h5>
                 </div>
             </div>
         </ng-container>

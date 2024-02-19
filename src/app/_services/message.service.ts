@@ -6,6 +6,8 @@ import { ChatList } from '../_models/chatList';
 import {  WebSocketSubject } from 'rxjs/webSocket';
 import { AccountService } from './account.service';
 import { User } from '../_models/User';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Injectable({
@@ -16,7 +18,7 @@ export class MessageService {
   apiUrl="https://localhost:7250/api/messages";
   wsUrl = "wss://localhost:7250/ws";
 
-  private ws: WebSocketSubject<any>;
+  private wss: WebSocketSubject<any>;
   currentUser:any;
 
   private messageThreadSource = new BehaviorSubject<Message[]>([]);
@@ -24,27 +26,29 @@ export class MessageService {
 
   private inboxThreadSource = new BehaviorSubject<ChatList>(new ChatList());
   inboxThread$ = this.inboxThreadSource.asObservable();
+
+  private unreadMessageCountThreadSource = new BehaviorSubject<number>(0);
+  unreadMessageCountThread = this.unreadMessageCountThreadSource.asObservable(); 
   
-  constructor(private http:HttpClient, private accountService:AccountService) { 
+  constructor(private http:HttpClient, private accountService:AccountService, private router: Router, private toastr:ToastrService) { 
 
     this.currentUser = accountService.getCurrentUser();
 
-    if(this.currentUser!==null)
-      this.ws = new WebSocketSubject(this.wsUrl+`?token=${this.currentUser.username}`);
+    if(this.currentUser!==null){
+      this.wss = new WebSocketSubject(this.wsUrl+`?access_token=${this.currentUser.token}`);
+      this.getUnreadMessageCount();
+    }
     else 
-      this.ws = new WebSocketSubject(this.wsUrl);
+      this.wss = new WebSocketSubject(this.wsUrl);
   }
 
 
   onWSMessage(callback:(message:Message)=>void) {
-
-    this.ws.subscribe({
+    this.wss.subscribe({
       // retrieve message
       next: (message:Message) =>{
         callback(message);
-
         this.updateChatList(message);
-        
       }
     });
   }
@@ -109,21 +113,28 @@ export class MessageService {
       }
     })
   }
-
+  
   getMessages(sender:string, receiver:string, pageNumber:number=1){
     this.http.get<Message[]>(`${this.apiUrl}?senderUsername=${sender}&receiverUsername=${receiver}&pagenumber=${pageNumber}`).subscribe({
       next: messages => {
+        console.log(messages);
         this.messageThreadSource.next(messages);
       },
       error: error =>{
-        console.log(error);
+        // console.log(error);
+        this.router.navigateByUrl("/messages");
+        this.toastr.error(error.error);
       }
     })
   }
 
-  getMoreMessageWithScrolling(sender:string, receiver:string, pageNumber:number){
+  getMoreMessageWithScrolling(sender:string, receiver:string, pageNumber:number):any{
     this.http.get<Message[]>(`${this.apiUrl}?senderUsername=${sender}&receiverUsername=${receiver}&pagenumber=${pageNumber}`).subscribe({
       next: messages => {
+        if(messages.length==0){
+          this.toastr.warning("No more message","",{positionClass:"toast-top-right"});
+          return 0;
+        }
         this.messageThread$.pipe(take(1)).subscribe({
           next: threadMessages => {
             if(threadMessages){
@@ -135,6 +146,7 @@ export class MessageService {
             }
           }
         })
+        return 1;
       },
       error: error =>{
         console.log(error);
@@ -149,5 +161,27 @@ export class MessageService {
 
   searchUsers(username:string):Observable<User[]>{
     return this.http.get<User[]>(`${this.apiUrl}/searchUsers?username=${username}`);
+  }
+
+  getUnreadMessageCount(){
+    const username = this.accountService.getCurrentUser()?.username;
+    this.http.get<number>(this.apiUrl+`/newMessage?username=${username}`).subscribe({
+      next: res => {
+        this.unreadMessageCountThreadSource.next(res);
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
+  }
+
+  updateUnreadMessageCount(seenMessageCount:number){
+    this.unreadMessageCountThread.pipe(take(1)).subscribe({
+      next: res => {
+        res -= seenMessageCount;
+        this.unreadMessageCountThreadSource.next(res);
+      },
+      error: err => console.log(err)
+    })
   }
 }

@@ -11,8 +11,10 @@ import { TeacherFormComponent } from './teacher/teacher-form/teacher-form.compon
 import { InboxComponent } from './messages/inbox/inbox.component';
 import { MessageComponent } from './messages/message/message.component';
 import { ChatComponent } from './messages/chat/chat.component';
+import { HomeComponent } from './commonComponent/home/home.component';
 
 const routes: Routes = [
+  {path:'', component:HomeComponent},
   {path:'login', component:LoginComponent},
   {path:'register', component:RegisterComponent},
   {path:'students',component:TableComponent},
