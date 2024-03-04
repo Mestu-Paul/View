@@ -4,6 +4,7 @@ import { MessageService } from '../../_services/message.service';
 import { Router } from '@angular/router';
 import { AccountService } from '../../_services/account.service';
 import { ToastrService } from 'ngx-toastr';
+import { SenderUser } from '../../_models/Message';
 
 @Component({
   selector: 'app-message',
@@ -15,6 +16,7 @@ export class MessageComponent implements OnInit{
   username:string='';
   content:string='';
   currentUser:User = {} as User;
+  newMessage:SenderUser[] = [];
 
   constructor(private messageService:MessageService, private router:Router, private accountService: AccountService, private toastr:ToastrService){}
 
@@ -25,7 +27,8 @@ export class MessageComponent implements OnInit{
       return;
     }
     this.currentUser = this.accountService.getCurrentUser()!;
-    this.searchUser();  
+    this.searchUser(); 
+    this.getNewMessage(); 
   }
 
   searchUser(){
@@ -41,6 +44,15 @@ export class MessageComponent implements OnInit{
 
   gotoInbox(recipientUsername:string){
     this.router.navigate(['/messages/inbox'], { queryParams: { "recipientUsername": recipientUsername } });
+  }
+
+  getNewMessage(){
+    this.messageService.unreadMessageCountThread$.subscribe({
+      next: res => {
+        this.newMessage = res;
+      },
+      error: err => console.log(err)
+    })
   }
 
 }

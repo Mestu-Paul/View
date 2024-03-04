@@ -7,3 +7,10 @@ export class Message{
     messageSent?:string='';
     showSeenDate?:boolean=false;
 }
+
+
+export class SenderUser
+{
+    username:string='';
+    unreadMessageCount:number=0;
+}

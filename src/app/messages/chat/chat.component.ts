@@ -122,6 +122,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.messageService.messageThread$.subscribe({
       next: messages => {
         this.messages = messages;
+        this.scrollToBottom();
       }
     });
 

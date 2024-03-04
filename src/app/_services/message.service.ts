@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, take } from 'rxjs';
-import { Message } from '../_models/Message';
+import { Message, SenderUser } from '../_models/Message';
 import { ChatList } from '../_models/chatList';
 import {  WebSocketSubject } from 'rxjs/webSocket';
 import { AccountService } from './account.service';
@@ -27,8 +27,8 @@ export class MessageService {
   private inboxThreadSource = new BehaviorSubject<ChatList>(new ChatList());
   inboxThread$ = this.inboxThreadSource.asObservable();
 
-  private unreadMessageCountThreadSource = new BehaviorSubject<number>(0);
-  unreadMessageCountThread = this.unreadMessageCountThreadSource.asObservable(); 
+  private unreadMessageCountThreadSource = new BehaviorSubject<SenderUser[]>([]);
+  unreadMessageCountThread$ = this.unreadMessageCountThreadSource.asObservable(); 
   
   constructor(private http:HttpClient, private accountService:AccountService, private router: Router, private toastr:ToastrService) { 
 
@@ -46,9 +46,12 @@ export class MessageService {
   onWSMessage(callback:(message:Message)=>void) {
     this.wss.subscribe({
       // retrieve message
-      next: (message:Message) =>{
-        callback(message);
-        this.updateChatList(message);
+      next: (message:any) =>{
+        console.log("new ws message ", message);
+        if(message.type==='newMessage'){
+          callback(message.content);
+          this.updateChatList(message.content);
+        }
       }
     });
   }
@@ -115,6 +118,7 @@ export class MessageService {
   }
   
   getMessages(sender:string, receiver:string, pageNumber:number=1){
+    this.updateUnreadMessageCount(receiver);
     this.http.get<Message[]>(`${this.apiUrl}?senderUsername=${sender}&receiverUsername=${receiver}&pagenumber=${pageNumber}`).subscribe({
       next: messages => {
         console.log(messages);
@@ -165,7 +169,7 @@ export class MessageService {
 
   getUnreadMessageCount(){
     const username = this.accountService.getCurrentUser()?.username;
-    this.http.get<number>(this.apiUrl+`/newMessage?username=${username}`).subscribe({
+    this.http.get<SenderUser[]>(this.apiUrl+`/newMessage?username=${username}`).subscribe({
       next: res => {
         this.unreadMessageCountThreadSource.next(res);
       },
@@ -175,13 +179,18 @@ export class MessageService {
     })
   }
 
-  updateUnreadMessageCount(seenMessageCount:number){
-    this.unreadMessageCountThread.pipe(take(1)).subscribe({
+  updateUnreadMessageCount(username:string){
+    this.unreadMessageCountThread$.pipe(take(1)).subscribe({
       next: res => {
-        res -= seenMessageCount;
-        this.unreadMessageCountThreadSource.next(res);
+        const indx = res.findIndex(u => u.username===username);
+        if(indx!==-1){
+          res.splice(indx, 1);
+          this.unreadMessageCountThreadSource.next(res);
+        }
       },
       error: err => console.log(err)
     })
   }
+
+
 }

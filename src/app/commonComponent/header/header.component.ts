@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { AccountService } from '../../_services/account.service';
-import { User } from '../../_models/User';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { MessageService } from '../../_services/message.service';
@@ -25,8 +24,13 @@ export class HeaderComponent {
   }
 
   updateUnreadMessageCount(){
-    this.messageService.unreadMessageCountThread.subscribe({
-      next: res => this.unreadMessageCount = res,
+    this.messageService.unreadMessageCountThread$.subscribe({
+      next: res => {
+        this.unreadMessageCount = 0;
+        res.forEach(element => {
+          this.unreadMessageCount += element.unreadMessageCount;
+        });
+      },
       error: err => console.log(err)
     })
   }
