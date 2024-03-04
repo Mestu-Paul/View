@@ -1,24 +1,37 @@
-<div class="container-fluid">
-    <div *ngIf="!initiate" class="text-center mt-5">
-        Please select one
-    </div >
-    <div *ngIf="initiate">
-        <div class="title">
-            You're currently chatting with {{receiverUsername}}
-        </div>
-        <ul class="px-3" style="list-style: none;">
-            <li class="my-3"
-            [ngClass]="{'text-end': senderUsername===message.senderUsername}" 
-            *ngFor="let message of messages" >{{message.content}}</li>
-        </ul>
-        <form class="message-input" (submit)="sendMessage()">
-            <div class="d-flex">
-                <input type="text" class="form-control py-2 item" name="messageContent" [(ngModel)]="content">
-                <div>
-                    <button class="btn btn-warning item">Send</button>
-                </div>
-            </div>
-        </form>
-
+<div *ngIf="!initiate" class="text-center my-5">
+    Please select one
+</div>
+<div *ngIf="initiate" class="chat">
+    <div class="text-center">
+        <button class="btn mt-1" (click)="getMoreMessage()">More</button>
     </div>
+    <ul #scrollChatBox class="pb-5">
+      <ng-container  *ngFor="let message of messages">
+        <ng-container *ngIf="senderUsername === message.senderUsername">
+            <div class="me-5 d-flex justify-content-end" (click)="message.showSeenDate=true">
+                <li title="Seen at {{datePipe.transform(message.dateRead,'medium')}}" class="py-2 px-4 my-1 sender-talkbubble" style="width: fit-content; max-width: 70%;">
+                    {{ message.content }}
+                </li>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="senderUsername !== message.senderUsername">
+            <div class="ms-5  d-flex justify-content-start">
+                <li  class="py-2 px-4 my-1 recipient-talkbubble" style="width: fit-content; max-width: 70%;">
+                    {{ message.content }}
+                </li>
+            </div>
+        </ng-container>
+      </ng-container>
+
+    </ul> 
+
+    <form #messageForm="ngForm" class="message-input" (submit)="sendMessage()" class="input-group mx-auto" style="width: 60%;">
+        <input 
+        name="content" required 
+        [(ngModel)]="content"
+        type="text" class="form-control"  style="box-shadow: 0px 0px 9px 0px #adadac; outline: none; padding: 10px;" placeholder="Send a private message">
+        <div class="input-group-append" >
+            <button [disabled]="!messageForm.valid" class="btn btn-warning" style="box-shadow: 0px 0px 9px 0px #ffc107; padding: 10px;" type="submit"> Send </button>
+        </div>
+    </form>
 </div>

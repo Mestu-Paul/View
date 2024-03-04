@@ -17,11 +17,12 @@ export class DashboardComponent implements OnInit{
   pageNumber:number=1;
   totalPages:number=1;
 
-  constructor(private accountService:AccountService, private toastr: ToastrService, private router:Router){}
+  constructor(public accountService:AccountService, private toastr: ToastrService, private router:Router){}
   ngOnInit(): void {
     if(this.accountService.getCurrentUser()===null){
       this.toastr.error("You are not permitted");
-      this.router.navigateByUrl("/login");
+      this.router.navigateByUrl("/");
+      return;
     }
 
     var role = this.accountService.getCurrentUser()?.role;
@@ -36,7 +37,6 @@ export class DashboardComponent implements OnInit{
   loadUsers(pageNumber:number=1){
     this.accountService.getUsers(pageNumber).subscribe({
       next: data => {
-        console.log(data);
         if (data) {
             this.users = data.item1;
             this.totalPages = data.item2;
@@ -64,5 +64,18 @@ export class DashboardComponent implements OnInit{
       }
     });
     this.changeRole=false;
+  }
+
+  deleteUser(username:string){
+    this.accountService.deleteUser(username).subscribe({
+      next: res => {
+        this.toastr.success("User deleted");
+        this.loadUsers();
+      },
+      error: error =>{
+        console.log(error);
+        this.toastr.error(error.error);
+      }
+    })
   }
 }

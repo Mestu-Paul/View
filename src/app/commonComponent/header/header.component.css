@@ -4,6 +4,7 @@
     display: flex;
     justify-content: space-between;
     padding: 20px;
+    height: 10vh;
   }
 
 .menu{
@@ -25,4 +26,19 @@
 a{
   text-decoration: none;
   color: white;
+}
+
+#messages {
+  position: relative;
+}
+
+
+#messages .badge {
+  position: absolute;
+  top: -10px;
+  left: 95%;
+  padding: 5px 10px;
+  border-radius: 50%;
+  background: rgb(204, 204, 204);
+  color: rgb(0, 0, 0);
 }

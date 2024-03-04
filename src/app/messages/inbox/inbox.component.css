@@ -26,9 +26,16 @@
 }
 
 .inbox-message-list ul li:hover{
-    background-color: #d6d6d6;
+    background-color: #f1f1f1;
 }
 
 .chat-box{
     width: 90%;
+    height: 90vh;
 }
+
+.title{
+    text-align: center;
+    font-size: 20px;
+    background-color: gray;
+ }

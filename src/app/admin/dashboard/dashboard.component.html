@@ -25,7 +25,8 @@
                         </select>
                     </td>
                     <td class="actions">
-                        <button class="btn btn-danger" type="button" >Delete</button>
+                        <button [disabled]="user.username===accountService.getCurrentUser()?.username" class="btn btn-danger" type="button" 
+                        (click)="deleteUser(user.username)">Delete</button>
                     </td>
                 </tr>
             </tbody>

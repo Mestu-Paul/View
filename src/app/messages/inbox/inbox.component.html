@@ -1,9 +1,17 @@
 <div class="container-fluid d-flex">
     <div class="inbox-message-list">
-        <ul>
-            <li class="py-2" [ngClass]="{'active-chat': currentRecipientUsername===user.username}" *ngFor="let user of users" (click)="showChat(user.username)">
-                {{user.username}}
+        <ul >
+            <li class="py-2 active-chat" *ngIf="newRecipientUsername" (click)="showChat(newRecipientUsername)">
+                    {{newRecipientUsername}}
             </li>
+            <ng-container *ngIf="chatList && chatList.recipientUsername">
+                <ng-container *ngFor="let user of chatList.recipientUsername">
+                    <li  class="py-2" [ngClass]="{'active-chat': currentRecipientUsername===user.username}" 
+                     *ngIf="newRecipientUsername!==user.username" (click)="navigateToChat(user.username)">
+                        {{user.username}}
+                    </li>
+                </ng-container>
+            </ng-container>
         </ul>
     </div>
     <div class="chat-box">

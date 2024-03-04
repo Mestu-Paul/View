@@ -54,7 +54,7 @@ export class TableComponent implements OnInit {
       },
       error: error =>{
         this.toastr.error("You are not permitted");
-        this.router.navigateByUrl('/login');
+        this.router.navigateByUrl('/');
       }
     });
   }

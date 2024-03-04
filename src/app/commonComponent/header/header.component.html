@@ -1,11 +1,16 @@
 <header class="main-header">
       <a class="title" routerLink="/">Student Crud Application</a>
       <div class="menu">
-            <div>
-                  <a class="nav-item mx-3" routerLink="students">Students</a>
-                  <a class="nav-item mx-3" href="/teachers">Teachers</a>
-                  <a class="nav-item mx-3" href="/admin-dashboard">Admin</a>
-                  <a class="nav-item mx-3" href="/messages/inbox">Messages</a>
+            <div >
+                  <ng-container *ngIf="accountService.isLoggedIn()">
+                        <a class="nav-item mx-3" routerLink="students">Students</a>
+                        <a class="nav-item mx-3" routerLink="teachers">Teachers</a>
+                        <a class="nav-item mx-3" routerLink="admin-dashboard">Admin</a>
+                        <a class="nav-item mx-3" routerLink="messages" id="messages">
+                              Messages
+                              <span *ngIf="unreadMessageCount>0" class="badge">{{unreadMessageCount}}</span>
+                        </a>
+                  </ng-container>
             </div>
             <div *ngIf="!accountService.isLoggedIn()">
                   <a routerLink="/login" class="mx-2">Login</a>

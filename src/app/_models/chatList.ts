@@ -7,5 +7,4 @@ export class ChatList
 {
     username:string = '';
     recipientUsername:Recipient[] = [];
-
 }
